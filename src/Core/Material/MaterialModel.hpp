@@ -1,9 +1,14 @@
 #pragma once
 #include <string>
+#include <memory>
+#include <optional>
 
 #include <Core/RaCore.hpp>
 
 #include <Core/Utils/Observable.hpp>
+
+#include <Core/Utils/Color.hpp>
+#include <Core/Types.hpp>
 
 namespace Ra {
 namespace Core {
@@ -29,6 +34,14 @@ class RA_CORE_API MaterialModel : public Utils::ObservableVoid
 
     /// DEBUG
     virtual void displayInfo() const;
+
+    virtual Utils::Color evalBSDF(Vector3f w_i, Vector3f w_o, Vector3f normal, Vector2f uv);
+    virtual std::optional<Vector3f> sample(Vector3f inDir, Vector3f normal, Vector2f u);
+    virtual Scalar PDF(Vector3f inDir, Vector3f outDir, Vector3f normal);
+
+    void coordinateSystem(Vector3f normal, Vector3f* tangent, Vector3f* bitangent);
+
+    Vector3f randomInHemisphere(Vector3f normal);
 
   private:
     std::string m_materialType;
