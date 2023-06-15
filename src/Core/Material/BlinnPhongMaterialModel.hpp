@@ -30,6 +30,12 @@ class RA_CORE_API BlinnPhongMaterialModel : public MaterialModel
 
     bool hasOpacityTexture() const { return m_hasTexOpacity; }
 
+    Utils::Color evalBSDF(Vector3f w_i, Vector3f w_o, Vector3f normal, Vector2f uv) override;
+    std::optional<std::pair<Vector3f, Scalar>> sample(Vector3f inDir, Vector3f normal, Vector2f u) override;
+    Scalar PDF(Vector3f inDir, Vector3f outDir, Vector3f normal) override;
+
+    Scalar specularPDF(Vector3f dir, Vector3f normal);
+
     /// DATA MEMBERS
     Core::Utils::Color m_kd { 0.7_ra, 0.7_ra, 0.7_ra };
     Core::Utils::Color m_ks { 0.3_ra, 0.3_ra, 0.3_ra };
