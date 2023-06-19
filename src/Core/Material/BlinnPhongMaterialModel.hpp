@@ -2,6 +2,7 @@
 
 #include <Core/Material/MaterialModel.hpp>
 #include <Core/Utils/Color.hpp>
+#include <ctime>
 
 namespace Ra {
 namespace Core {
@@ -36,6 +37,8 @@ class RA_CORE_API BlinnPhongMaterialModel : public MaterialModel
 
     Scalar specularPDF(Vector3f dir, Vector3f normal);
 
+    static std::minstd_rand getRandomEngine();
+
     /// DATA MEMBERS
     Core::Utils::Color m_kd { 0.7_ra, 0.7_ra, 0.7_ra };
     Core::Utils::Color m_ks { 0.3_ra, 0.3_ra, 0.3_ra };
@@ -51,7 +54,11 @@ class RA_CORE_API BlinnPhongMaterialModel : public MaterialModel
     bool m_hasTexShininess { false };
     bool m_hasTexNormal { false };
     bool m_hasTexOpacity { false };
+
+    static std::minstd_rand m_randomEngine;
 };
+
+std::minstd_rand BlinnPhongMaterialModel::m_randomEngine = std::minstd_rand(std::time(nullptr));
 
 } // namespace Material
 } // namespace Core

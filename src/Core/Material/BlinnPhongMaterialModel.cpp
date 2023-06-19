@@ -61,8 +61,7 @@ BlinnPhongMaterialModel::sample( Vector3f inDir, Vector3f normal, Vector2f u ) {
     sIntensity /= diffSpecNorm;
 
     std::uniform_real_distribution<Scalar> unifDistributionRand{0, 1};
-    std::minstd_rand randomEngine(std::time(nullptr));
-    Scalar distrib = unifDistributionRand(randomEngine);
+    Scalar distrib = unifDistributionRand(m_randomEngine);
 
     // diffuse part
     if(distrib < dIntensity) {
@@ -95,6 +94,11 @@ Scalar BlinnPhongMaterialModel::specularPDF( Vector3f dir, Vector3f normal ) {
     Scalar result = ((m_ns + 1) / (2.0f * M_PI)) * std::pow(cosTheta, m_ns);
 
     return result;
+}
+
+std::minstd_rand BlinnPhongMaterialModel::getRandomEngine() {
+
+    return m_randomEngine;
 }
 
 } // namespace Material
