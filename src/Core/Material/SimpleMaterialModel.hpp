@@ -47,9 +47,9 @@ class RA_CORE_API LambertianMaterialModel : public SimpleMaterialModel
     /// QUERY
     bool hasNormalTexture() const { return m_hasTexNormal; }
 
-    Utils::Color evalBSDF(Vector3f w_i, Vector3f w_o, Vector3f normal, Vector2f uv) override;
-    std::optional<std::pair<Vector3f, Scalar>> sample(Vector3f inDir, Vector3f normal, Vector2f u) override;
-    Scalar PDF(Vector3f inDir, Vector3f outDir, Vector3f normal) override;
+    Utils::Color evalBSDF(Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv) override;
+    std::optional<std::pair<Vector3, Scalar>> sample(Vector3 inDir, Vector3 normal, Vector2 u) override;
+    Scalar PDF(Vector3 inDir, Vector3 outDir, Vector3 normal) override;
 
     /// DATA MEMBERS
     std::string m_texNormal;

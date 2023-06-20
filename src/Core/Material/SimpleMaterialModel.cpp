@@ -38,10 +38,10 @@ void LambertianMaterialModel::displayInfo() const {
     print( hasOpacityTexture(), " Alpha Texture  : ", m_texOpacity );
 }
 
-Utils::Color Material::LambertianMaterialModel::evalBSDF( Vector3f w_i,
-                                                          Vector3f w_o,
-                                                          Vector3f normal,
-                                                          Vector2f uv ) {
+Utils::Color Material::LambertianMaterialModel::evalBSDF( Vector3 w_i,
+                                                          Vector3 w_o,
+                                                          Vector3 normal,
+                                                          Vector2 uv ) {
     if(w_i.dot(normal) <= 0 || w_o.dot(normal) <= 0) {
         return Utils::Color::Black();
     }
@@ -49,22 +49,22 @@ Utils::Color Material::LambertianMaterialModel::evalBSDF( Vector3f w_i,
     return m_kd * ( 1 / M_PI );
 }
 
-std::optional<std::pair<Vector3f, Scalar>> LambertianMaterialModel::sample( Vector3f inDir, Vector3f normal, Vector2f u ) {
+std::optional<std::pair<Vector3, Scalar>> LambertianMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector2 u ) {
     // create local to normal coordinate system
-    Vector3f tangent, bitangent;
+    Vector3 tangent, bitangent;
     coordinateSystem(normal, &tangent, &bitangent);
 
     // sample point on hemisphere with cosine-weighted distribution
-    std::pair<Vector3f, Scalar> smpl = sampleHemisphereCosineWeighted(u);
+    std::pair<Vector3, Scalar> smpl = sampleHemisphereCosineWeighted(u);
 
     // transform sampled point from local to world coodinate system
     Vector3 wi(smpl.first.dot(tangent), smpl.first.dot(bitangent), smpl.first.dot(normal));
-    std::pair<Vector3f, Scalar> result {wi, smpl.second};
+    std::pair<Vector3, Scalar> result {wi, smpl.second};
 
     return result;
 }
 
-Scalar LambertianMaterialModel::PDF( Vector3f inDir, Vector3f outDir, Vector3f normal ) {
+Scalar LambertianMaterialModel::PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) {
     return cosineWeightedPDF(outDir, normal);
 }
 

@@ -25,15 +25,15 @@ void BlinnPhongMaterialModel::displayInfo() const {
     print( hasNormalTexture(), " Normal Texture : ", m_texNormal );
     print( hasOpacityTexture(), " Alpha Texture  : ", m_texOpacity );
 }
-Utils::Color Material::BlinnPhongMaterialModel::evalBSDF( Vector3f w_i,
-                                                          Vector3f w_o,
-                                                          Vector3f normal,
-                                                          Vector2f uv ) {
+Utils::Color Material::BlinnPhongMaterialModel::evalBSDF( Vector3 w_i,
+                                                          Vector3 w_o,
+                                                          Vector3 normal,
+                                                          Vector2 uv ) {
     // diffuse lambertien component
     Utils::Color diffuse = m_kd / M_PI;
 
     // Blinn-Phong specular component
-    Vector3f halfway = w_i + w_o;
+    Vector3 halfway = w_i + w_o;
     halfway.normalize();
     Scalar specularIntensity = (m_ns + 2.0f) / (2.0f * M_PI) * std::pow(normal.dot(halfway), m_ns);
     Utils::Color specular = m_ks * specularIntensity;
@@ -42,9 +42,9 @@ Utils::Color Material::BlinnPhongMaterialModel::evalBSDF( Vector3f w_i,
     Utils::Color bsdf = diffuse + specular;
 }
 
-std::optional<std::pair<Vector3f, Scalar>>
-BlinnPhongMaterialModel::sample( Vector3f inDir, Vector3f normal, Vector2f u ) {
-    Vector3f halfway, tangent, bitangent;
+std::optional<std::pair<Vector3, Scalar>>
+BlinnPhongMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector2 u ) {
+    Vector3 halfway, tangent, bitangent;
 
     coordinateSystem(normal, &tangent, &bitangent);
 
@@ -61,21 +61,21 @@ BlinnPhongMaterialModel::sample( Vector3f inDir, Vector3f normal, Vector2f u ) {
 
     // diffuse part
     if(distrib < dIntensity) {
-        std::pair<Vector3f, Scalar> smpl = sampleHemisphereCosineWeighted(u);
+        std::pair<Vector3, Scalar> smpl = sampleHemisphereCosineWeighted(u);
         Vector3 wi(smpl.first.dot(tangent), smpl.first.dot(bitangent), smpl.first.dot(normal));
-        std::pair<Vector3f, Scalar> result {wi, smpl.second};
+        std::pair<Vector3, Scalar> result {wi, smpl.second};
         return result;
     } else if(distrib < dIntensity + sIntensity) { // specular part
-        std::pair<Vector3f, Scalar> smpl = sampleSpecular(inDir, u);
+        std::pair<Vector3, Scalar> smpl = sampleSpecular(inDir, u);
         Vector3 wi(smpl.first.dot(tangent), smpl.first.dot(bitangent), smpl.first.dot(normal));
-        std::pair<Vector3f, Scalar> result {wi, smpl.second};
+        std::pair<Vector3, Scalar> result {wi, smpl.second};
         return result;
     } else { // no next dir
         return {};
     }
 }
 
-Scalar BlinnPhongMaterialModel::PDF( Vector3f inDir, Vector3f outDir, Vector3f normal ) {
+Scalar BlinnPhongMaterialModel::PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) {
     Vector3  rgbToLuminance { 0.2126_ra , 0.7152_ra,  0.0722_ra };
     Scalar dIntensity = m_kd.rgb().dot( rgbToLuminance );
     Scalar sIntensity = m_ks.rgb().dot( rgbToLuminance );
@@ -87,16 +87,16 @@ Scalar BlinnPhongMaterialModel::PDF( Vector3f inDir, Vector3f outDir, Vector3f n
     return std::clamp(dIntensity * cosineWeightedPDF(outDir, normal) + sIntensity * specularPDF(outDir, normal), 0_ra, 1_ra);
 }
 
-std::pair<Vector3f, Scalar> BlinnPhongMaterialModel::sampleSpecular(Vector3f inDir, Vector2f u) {
-    Vector3f nextDir;
+std::pair<Vector3, Scalar> BlinnPhongMaterialModel::sampleSpecular(Vector3 inDir, Vector2 u) {
+    Vector3 nextDir;
 
-    std::pair<Vector3f, Scalar> halfway = sampleHemisphereCosineWeighted(u);
+    std::pair<Vector3, Scalar> halfway = sampleHemisphereCosineWeighted(u);
     nextDir = inDir - 2.0f * inDir.dot(halfway.first) * halfway.first;
 
     return {nextDir, 0_ra};
 }
 
-Scalar BlinnPhongMaterialModel::specularPDF( Vector3f dir, Vector3f normal ) {
+Scalar BlinnPhongMaterialModel::specularPDF( Vector3 dir, Vector3 normal ) {
     Scalar cosTheta = normal.dot(dir);
     Scalar result = ((m_ns + 1) / (2.0f * M_PI)) * std::pow(cosTheta, m_ns);
 

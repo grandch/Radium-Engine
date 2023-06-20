@@ -35,16 +35,16 @@ class RA_CORE_API MaterialModel : public Utils::ObservableVoid
     /// DEBUG
     virtual void displayInfo() const;
 
-    virtual Utils::Color evalBSDF(Vector3f w_i, Vector3f w_o, Vector3f normal, Vector2f uv);
-    virtual std::optional<std::pair<Vector3f, Scalar>> sample(Vector3f inDir, Vector3f normal, Vector2f u);
-    virtual Scalar PDF(Vector3f inDir, Vector3f outDir, Vector3f normal);
+    virtual Utils::Color evalBSDF(Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv);
+    virtual std::optional<std::pair<Vector3, Scalar>> sample(Vector3 inDir, Vector3 normal, Vector2 u);
+    virtual Scalar PDF(Vector3 inDir, Vector3 outDir, Vector3 normal);
 
-    void coordinateSystem(Vector3f normal, Vector3f* tangent, Vector3f* bitangent);
+    void coordinateSystem(Vector3 normal, Vector3* tangent, Vector3* bitangent);
 
-    std::pair<Vector3f, Scalar> sampleHemisphereCosineWeighted(Vector2f u);
-    std::pair<Vector3f, Scalar> sampleHemisphere(Vector2 u);
+    std::pair<Vector3, Scalar> sampleHemisphereCosineWeighted(Vector2 u);
+    std::pair<Vector3, Scalar> sampleHemisphere(Vector2 u);
 
-    Scalar cosineWeightedPDF(Vector3f dir, Vector3f normal);
+    Scalar cosineWeightedPDF(Vector3 dir, Vector3 normal);
 
   private:
     std::string m_materialType;
