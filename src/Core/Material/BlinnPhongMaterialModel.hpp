@@ -31,12 +31,13 @@ class RA_CORE_API BlinnPhongMaterialModel : public MaterialModel
 
     bool hasOpacityTexture() const { return m_hasTexOpacity; }
 
-    Utils::Color evalBSDF(Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv) override;
-    std::optional<std::pair<Vector3, Scalar>> sample(Vector3 inDir, Vector3 normal, Vector2 u) override;
-    Scalar PDF(Vector3 inDir, Vector3 outDir, Vector3 normal) override;
+    Utils::Color evalBSDF( Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv ) override;
+    std::optional<std::pair<Vector3, Scalar>>
+    sample( Vector3 inDir, Vector3 normal, Vector2 u ) override;
+    Scalar PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) override;
 
-    std::pair<Vector3, Scalar> sampleSpecular(Vector2 u, Scalar roughness);
-    Scalar specularPDF(Vector3 dir, Vector3 normal, Scalar roughness);
+    std::pair<Vector3, Scalar> sampleSpecular( Vector2 u, Scalar roughness );
+    Scalar specularPDF( Vector3 dir, Vector3 normal, Scalar roughness );
 
     Scalar getRoughness();
 
@@ -61,7 +62,7 @@ class RA_CORE_API BlinnPhongMaterialModel : public MaterialModel
     static std::mt19937 m_randomEngine;
 };
 
-std::mt19937 BlinnPhongMaterialModel::m_randomEngine = std::mt19937 (std::time(nullptr));
+std::mt19937 BlinnPhongMaterialModel::m_randomEngine = std::mt19937( std::time( nullptr ) );
 
 } // namespace Material
 } // namespace Core

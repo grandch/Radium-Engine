@@ -1,7 +1,7 @@
 #include <Core/Material/SimpleMaterialModel.hpp>
 
-#include <Core/Utils/Log.hpp>
 #include "SimpleMaterialModel.hpp"
+#include <Core/Utils/Log.hpp>
 
 namespace Ra {
 namespace Core {
@@ -42,30 +42,29 @@ Utils::Color Material::LambertianMaterialModel::evalBSDF( Vector3 w_i,
                                                           Vector3 w_o,
                                                           Vector3 normal,
                                                           Vector2 uv ) {
-    if(w_i.dot(normal) <= 0 || w_o.dot(normal) <= 0) {
-        return Utils::Color::Black();
-    }
+    if ( w_i.dot( normal ) <= 0 || w_o.dot( normal ) <= 0 ) { return Utils::Color::Black(); }
 
     return m_kd / M_PI;
 }
 
-std::optional<std::pair<Vector3, Scalar>> LambertianMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector2 u ) {
+std::optional<std::pair<Vector3, Scalar>>
+LambertianMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector2 u ) {
     // create local to normal coordinate system
     Vector3 tangent, bitangent;
-    coordinateSystem(normal, &tangent, &bitangent);
+    coordinateSystem( normal, &tangent, &bitangent );
 
     // sample point on hemisphere with cosine-weighted distribution
-    std::pair<Vector3, Scalar> smpl = sampleHemisphereCosineWeighted(u);
+    std::pair<Vector3, Scalar> smpl = sampleHemisphereCosineWeighted( u );
 
     // transform sampled point from local to world coodinate system
-    Vector3 wi(smpl.first.dot(tangent), smpl.first.dot(bitangent), smpl.first.dot(normal));
-    std::pair<Vector3, Scalar> result {wi, smpl.second};
+    Vector3 wi( smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );
+    std::pair<Vector3, Scalar> result { wi, smpl.second };
 
     return result;
 }
 
 Scalar LambertianMaterialModel::PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) {
-    return cosineWeightedPDF(outDir, normal);
+    return cosineWeightedPDF( outDir, normal );
 }
 
 } // namespace Material

@@ -1,14 +1,14 @@
 #pragma once
-#include <string>
 #include <memory>
 #include <optional>
+#include <string>
 
 #include <Core/RaCore.hpp>
 
 #include <Core/Utils/Observable.hpp>
 
-#include <Core/Utils/Color.hpp>
 #include <Core/Types.hpp>
+#include <Core/Utils/Color.hpp>
 
 namespace Ra {
 namespace Core {
@@ -39,16 +39,17 @@ class RA_CORE_API MaterialModel : public Utils::ObservableVoid
      *  w_i : incident direction, w_o : outgoing direction, normal : geometric normal direction.
      *  w_i, w_o and normal are in world space.
      */
-    virtual Utils::Color evalBSDF(Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv);
-    virtual std::optional<std::pair<Vector3, Scalar>> sample(Vector3 inDir, Vector3 normal, Vector2 u);
-    virtual Scalar PDF(Vector3 inDir, Vector3 outDir, Vector3 normal);
+    virtual Utils::Color evalBSDF( Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv );
+    virtual std::optional<std::pair<Vector3, Scalar>>
+    sample( Vector3 inDir, Vector3 normal, Vector2 u );
+    virtual Scalar PDF( Vector3 inDir, Vector3 outDir, Vector3 normal );
 
-    void coordinateSystem(Vector3 normal, Vector3* tangent, Vector3* bitangent);
+    void coordinateSystem( Vector3 normal, Vector3* tangent, Vector3* bitangent );
 
-    std::pair<Vector3, Scalar> sampleHemisphereCosineWeighted(Vector2 u);
-    std::pair<Vector3, Scalar> sampleHemisphere(Vector2 u);
+    std::pair<Vector3, Scalar> sampleHemisphereCosineWeighted( Vector2 u );
+    std::pair<Vector3, Scalar> sampleHemisphere( Vector2 u );
 
-    Scalar cosineWeightedPDF(Vector3 dir, Vector3 normal);
+    Scalar cosineWeightedPDF( Vector3 dir, Vector3 normal );
 
   private:
     std::string m_materialType;
