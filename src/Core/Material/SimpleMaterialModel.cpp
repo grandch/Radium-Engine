@@ -46,7 +46,7 @@ Utils::Color Material::LambertianMaterialModel::evalBSDF( Vector3 w_i,
         return Utils::Color::Black();
     }
 
-    return m_kd * ( 1 / M_PI );
+    return m_kd / M_PI;
 }
 
 std::optional<std::pair<Vector3, Scalar>> LambertianMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector2 u ) {

@@ -2,6 +2,7 @@
 #include <Core/Utils/Log.hpp>
 
 #include <algorithm>
+#include "BlinnPhongMaterialModel.hpp"
 
 namespace Ra {
 namespace Core {
@@ -59,6 +60,8 @@ BlinnPhongMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector2 u ) {
     std::uniform_real_distribution<Scalar> unifDistributionRand{0, 1};
     Scalar distrib = unifDistributionRand(m_randomEngine);
 
+    Scalar roughness = getRoughness();
+
     // diffuse part
     if(distrib < dIntensity) {
         std::pair<Vector3, Scalar> smpl = sampleHemisphereCosineWeighted(u);
@@ -66,7 +69,7 @@ BlinnPhongMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector2 u ) {
         std::pair<Vector3, Scalar> result {wi, smpl.second};
         return result;
     } else if(distrib < dIntensity + sIntensity) { // specular part
-        std::pair<Vector3, Scalar> smpl = sampleSpecular(inDir, u);
+        std::pair<Vector3, Scalar> smpl = sampleSpecular(u, roughness);
         Vector3 wi(smpl.first.dot(tangent), smpl.first.dot(bitangent), smpl.first.dot(normal));
         std::pair<Vector3, Scalar> result {wi, smpl.second};
         return result;
@@ -87,20 +90,32 @@ Scalar BlinnPhongMaterialModel::PDF( Vector3 inDir, Vector3 outDir, Vector3 norm
     return std::clamp(dIntensity * cosineWeightedPDF(outDir, normal) + sIntensity * specularPDF(outDir, normal), 0_ra, 1_ra);
 }
 
-std::pair<Vector3, Scalar> BlinnPhongMaterialModel::sampleSpecular(Vector3 inDir, Vector2 u) {
-    Vector3 nextDir;
+std::pair<Vector3, Scalar> BlinnPhongMaterialModel::sampleSpecular(Vector2 u, Scalar roughness) {
+    Vector3 dir;
+    
+    Scalar cosTheta = std::pow(u[0], 1_ra / ( roughness + 2 ) );
+    Scalar sinTheta = 1-u[0];
+    Scalar phi = 2 * Math::Pi * u[1];
 
-    std::pair<Vector3, Scalar> halfway = sampleHemisphereCosineWeighted(u);
-    nextDir = inDir - 2.0f * inDir.dot(halfway.first) * halfway.first;
-
-    return {nextDir, 0_ra};
+    dir[0] = sinTheta * std::cos(phi);
+    dir[1] = sinTheta * std::sin(phi);
+    dir[2] = cosTheta;
+    
+    return {dir, (roughness+2) * std::pow(u[0], roughness) / 2 * Math::Pi};
 }
 
-Scalar BlinnPhongMaterialModel::specularPDF( Vector3 dir, Vector3 normal ) {
+Scalar BlinnPhongMaterialModel::specularPDF( Vector3 dir, Vector3 normal, Scalar roughness ) {
     Scalar cosTheta = normal.dot(dir);
-    Scalar result = ((m_ns + 1) / (2.0f * M_PI)) * std::pow(cosTheta, m_ns);
+    return (roughness+2) * std::pow(cosTheta, roughness) / 2 * Math::Pi;
+}
 
-    return result;
+Scalar BlinnPhongMaterialModel::getRoughness() {
+    Scalar ns = m_ns;
+    if (ns > 1) {
+        ns /= 128_ra;
+    }
+    Scalar r = std::clamp(1 - ns, 0.04_ra, 0.96_ra);
+    return 1 - m_ns;
 }
 
 std::mt19937 BlinnPhongMaterialModel::getRandomEngine() {
