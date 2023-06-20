@@ -35,6 +35,10 @@ class RA_CORE_API MaterialModel : public Utils::ObservableVoid
     /// DEBUG
     virtual void displayInfo() const;
 
+    /** Compute BSDF value for a set of directions and texture coordinates.
+     *  w_i : incident direction, w_o : outgoing direction, normal : geometric normal direction.
+     *  w_i, w_o and normal are in world space.
+     */
     virtual Utils::Color evalBSDF(Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv);
     virtual std::optional<std::pair<Vector3, Scalar>> sample(Vector3 inDir, Vector3 normal, Vector2 u);
     virtual Scalar PDF(Vector3 inDir, Vector3 outDir, Vector3 normal);
