@@ -41,9 +41,8 @@ class RA_CORE_API MaterialModel : public Utils::ObservableVoid
 
     void coordinateSystem(Vector3f normal, Vector3f* tangent, Vector3f* bitangent);
 
-    Vector3f sampleSpecular(Vector3f inDir, Vector2f u);
-    Vector3f sampleHemisphereCosineWeighted(Vector2f u);
-    Vector3f sampleHemisphere(Vector3f normal);
+    std::pair<Vector3f, Scalar> sampleHemisphereCosineWeighted(Vector2f u);
+    std::pair<Vector3f, Scalar> sampleHemisphere(Vector2 u);
 
     Scalar cosineWeightedPDF(Vector3f dir, Vector3f normal);
 

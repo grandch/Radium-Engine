@@ -1,6 +1,5 @@
 #include <Core/Material/BlinnPhongMaterialModel.hpp>
 #include <Core/Utils/Log.hpp>
-#include "BlinnPhongMaterialModel.hpp"
 
 #include <algorithm>
 
@@ -45,17 +44,14 @@ Utils::Color Material::BlinnPhongMaterialModel::evalBSDF( Vector3f w_i,
 
 std::optional<std::pair<Vector3f, Scalar>>
 BlinnPhongMaterialModel::sample( Vector3f inDir, Vector3f normal, Vector2f u ) {
-    /*
-    compute intensity of diffuse and specular
-    compute norm (max(1, Idiffuse + Ispecular))
-    normalize Idiffuse and Ispecular
-    */
+    Vector3f halfway, tangent, bitangent;
 
-    Vector3f nextDir, halfway;
+    coordinateSystem(normal, &tangent, &bitangent);
 
-    Scalar dIntensity = (m_kd.x() + m_kd.y() + m_kd.z()) / 3.f;
-    Scalar sIntensity = (m_ks.x() + m_ks.y() + m_ks.z()) / 3.f;
-    Scalar diffSpecNorm = std::max(1.f, dIntensity + sIntensity);
+    Vector3  rgbToLuminance { 0.2126_ra , 0.7152_ra,  0.0722_ra };
+    Scalar dIntensity = m_kd.rgb().dot( rgbToLuminance );
+    Scalar sIntensity = m_ks.rgb().dot( rgbToLuminance );
+    Scalar diffSpecNorm = std::max(1_ra, dIntensity + sIntensity);
 
     dIntensity /= diffSpecNorm;
     sIntensity /= diffSpecNorm;
@@ -65,13 +61,14 @@ BlinnPhongMaterialModel::sample( Vector3f inDir, Vector3f normal, Vector2f u ) {
 
     // diffuse part
     if(distrib < dIntensity) {
-        nextDir = sampleHemisphereCosineWeighted(u);
-        std::pair<Vector3f, Scalar> result {nextDir, cosineWeightedPDF(nextDir, normal)};
+        std::pair<Vector3f, Scalar> smpl = sampleHemisphereCosineWeighted(u);
+        Vector3 wi(smpl.first.dot(tangent), smpl.first.dot(bitangent), smpl.first.dot(normal));
+        std::pair<Vector3f, Scalar> result {wi, smpl.second};
         return result;
-    } else if(distrib > dIntensity && distrib < dIntensity + sIntensity) { // specular part
-        nextDir = sampleSpecular(inDir, u);
-        // compute specular pdf
-        std::pair<Vector3f, Scalar> result;
+    } else if(distrib < dIntensity + sIntensity) { // specular part
+        std::pair<Vector3f, Scalar> smpl = sampleSpecular(inDir, u);
+        Vector3 wi(smpl.first.dot(tangent), smpl.first.dot(bitangent), smpl.first.dot(normal));
+        std::pair<Vector3f, Scalar> result {wi, smpl.second};
         return result;
     } else { // no next dir
         return {};
@@ -79,14 +76,24 @@ BlinnPhongMaterialModel::sample( Vector3f inDir, Vector3f normal, Vector2f u ) {
 }
 
 Scalar BlinnPhongMaterialModel::PDF( Vector3f inDir, Vector3f outDir, Vector3f normal ) {
-    Scalar dIntensity = (m_kd.x() + m_kd.y() + m_kd.z()) / 3.f;
-    Scalar sIntensity = (m_ks.x() + m_ks.y() + m_ks.z()) / 3.f;
-    Scalar diffSpecNorm = std::max(1.f, dIntensity + sIntensity);
+    Vector3  rgbToLuminance { 0.2126_ra , 0.7152_ra,  0.0722_ra };
+    Scalar dIntensity = m_kd.rgb().dot( rgbToLuminance );
+    Scalar sIntensity = m_ks.rgb().dot( rgbToLuminance );
+    Scalar diffSpecNorm = std::max(1_ra, dIntensity + sIntensity);
 
     dIntensity /= diffSpecNorm;
     sIntensity /= diffSpecNorm;
 
-    return std::clamp(dIntensity * cosineWeightedPDF(outDir, normal) + sIntensity * specularPDF(outDir, normal), Scalar(0), Scalar(1));
+    return std::clamp(dIntensity * cosineWeightedPDF(outDir, normal) + sIntensity * specularPDF(outDir, normal), 0_ra, 1_ra);
+}
+
+std::pair<Vector3f, Scalar> BlinnPhongMaterialModel::sampleSpecular(Vector3f inDir, Vector2f u) {
+    Vector3f nextDir;
+
+    std::pair<Vector3f, Scalar> halfway = sampleHemisphereCosineWeighted(u);
+    nextDir = inDir - 2.0f * inDir.dot(halfway.first) * halfway.first;
+
+    return {nextDir, 0_ra};
 }
 
 Scalar BlinnPhongMaterialModel::specularPDF( Vector3f dir, Vector3f normal ) {
@@ -96,7 +103,7 @@ Scalar BlinnPhongMaterialModel::specularPDF( Vector3f dir, Vector3f normal ) {
     return result;
 }
 
-std::minstd_rand BlinnPhongMaterialModel::getRandomEngine() {
+std::mt19937 BlinnPhongMaterialModel::getRandomEngine() {
 
     return m_randomEngine;
 }

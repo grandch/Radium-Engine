@@ -33,37 +33,32 @@ void MaterialModel::coordinateSystem( Vector3f normal, Vector3f* tangent, Vector
     *bitangent = normal.cross(*tangent);
 }
 
-Vector3f MaterialModel::sampleSpecular(Vector3f inDir, Vector2f u) {
-    Vector3f nextDir, halfway;
+std::pair<Vector3f, Scalar> MaterialModel::sampleHemisphereCosineWeighted( Vector2f u ) {
+    Vector3f dir;
+    
+    Scalar cosTheta = std::sqrt(u[0]);
+    Scalar sinTheta = std::sqrt(1-u[0]);
+    Scalar phi = 2 * Math::Pi * u[1];
 
-    halfway = sampleHemisphereCosineWeighted(u);
-    nextDir = inDir - 2.0f * inDir.dot(halfway) * halfway;
-
-    return nextDir;
+    dir[0] = sinTheta * std::cos(phi);
+    dir[1] = sinTheta * std::sin(phi);
+    dir[2] = cosTheta;
+    
+    return {dir, cosTheta/Math::Pi};
 }
 
-Vector3f MaterialModel::sampleHemisphereCosineWeighted( Vector2f u ) {
-    Vector3f point;
+std::pair<Vector3f, Scalar> MaterialModel::sampleHemisphere( Vector2 u ) {
+    Vector3f dir;
     
-    Scalar r = std::sqrt(u[0]);
-    Scalar phi = 2 * M_PI * u[1];
+    Scalar cosTheta = u[0];
+    Scalar sinTheta = 1-u[0];
+    Scalar phi = 2 * Math::Pi * u[1];
 
-    point[0] = r * std::cos(phi);
-    point[1] = r * std::sin(phi);
-    point[2] = std::sqrt(std::max(0.f, 1 - point[0]*point[0] - point[1]*point[1]));
+    dir[0] = sinTheta * std::cos(phi);
+    dir[1] = sinTheta * std::sin(phi);
+    dir[2] = cosTheta;
     
-    return point;
-}
-
-Vector3f MaterialModel::sampleHemisphere( Vector3f normal ) {
-    Vector3f vec = Vector3f::Random(3,1);
-    vec /= vec.norm();
-
-    if(vec.dot(normal) > 0) {
-        return vec;
-    }
-    
-    return -vec;
+    return {dir, 1_ra/(2_ra*Math::Pi)};
 }
 
 Scalar MaterialModel::cosineWeightedPDF( Vector3f dir, Vector3f normal ) {

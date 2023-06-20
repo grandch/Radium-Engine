@@ -35,9 +35,10 @@ class RA_CORE_API BlinnPhongMaterialModel : public MaterialModel
     std::optional<std::pair<Vector3f, Scalar>> sample(Vector3f inDir, Vector3f normal, Vector2f u) override;
     Scalar PDF(Vector3f inDir, Vector3f outDir, Vector3f normal) override;
 
+  std::pair<Vector3f, Scalar> sampleSpecular(Vector3f inDir, Vector2f u);
     Scalar specularPDF(Vector3f dir, Vector3f normal);
 
-    static std::minstd_rand getRandomEngine();
+    static std::mt19937 getRandomEngine();
 
     /// DATA MEMBERS
     Core::Utils::Color m_kd { 0.7_ra, 0.7_ra, 0.7_ra };
@@ -55,10 +56,10 @@ class RA_CORE_API BlinnPhongMaterialModel : public MaterialModel
     bool m_hasTexNormal { false };
     bool m_hasTexOpacity { false };
 
-    static std::minstd_rand m_randomEngine;
+    static std::mt19937 m_randomEngine;
 };
 
-std::minstd_rand BlinnPhongMaterialModel::m_randomEngine = std::minstd_rand(std::time(nullptr));
+std::mt19937 BlinnPhongMaterialModel::m_randomEngine = std::mt19937 (std::time(nullptr));
 
 } // namespace Material
 } // namespace Core

@@ -51,15 +51,15 @@ Utils::Color Material::LambertianMaterialModel::evalBSDF( Vector3f w_i,
 
 std::optional<std::pair<Vector3f, Scalar>> LambertianMaterialModel::sample( Vector3f inDir, Vector3f normal, Vector2f u ) {
     // create local to normal coordinate system
-    Vector3f tangent, bitangent, point;
+    Vector3f tangent, bitangent;
     coordinateSystem(normal, &tangent, &bitangent);
 
     // sample point on hemisphere with cosine-weighted distribution
-    point = sampleHemisphereCosineWeighted(u);
+    std::pair<Vector3f, Scalar> smpl = sampleHemisphereCosineWeighted(u);
 
     // transform sampled point from local to world coodinate system
-    Vector3 wi(point.dot(tangent), point.dot(bitangent), point.dot(normal));
-    std::pair<Vector3f, Scalar> result {wi, PDF(inDir, wi, normal)};
+    Vector3 wi(smpl.first.dot(tangent), smpl.first.dot(bitangent), smpl.first.dot(normal));
+    std::pair<Vector3f, Scalar> result {wi, smpl.second};
 
     return result;
 }
