@@ -44,13 +44,6 @@ class RA_CORE_API MaterialModel : public Utils::ObservableVoid
     sample( Vector3 inDir, Vector3 normal, Vector2 u );
     virtual Scalar PDF( Vector3 inDir, Vector3 outDir, Vector3 normal );
 
-    void coordinateSystem( Vector3 normal, Vector3* tangent, Vector3* bitangent );
-
-    std::pair<Vector3, Scalar> sampleHemisphereCosineWeighted( Vector2 u );
-    std::pair<Vector3, Scalar> sampleHemisphere( Vector2 u );
-
-    Scalar cosineWeightedPDF( Vector3 dir, Vector3 normal );
-
   private:
     std::string m_materialType;
     std::string m_name;

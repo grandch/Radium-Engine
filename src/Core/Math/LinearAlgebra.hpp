@@ -123,6 +123,73 @@ inline Matrix4 perspective( Scalar fovy, Scalar aspect, Scalar near, Scalar zfar
 inline Matrix4
 orthographic( Scalar left, Scalar right, Scalar bottom, Scalar top, Scalar near, Scalar zfar );
 
+inline void coordinateSystem( Vector3 normal, Vector3* tangent, Vector3* bitangent ) {
+    if ( std::abs( normal[0] ) > std::abs( normal[1] ) ) {
+        Scalar invLen = 1 / std::sqrt( normal[0] * normal[0] + normal[2] * normal[2] );
+        *tangent      = Vector3( -normal[2] * invLen, 0, normal[0] * invLen );
+    }
+    else {
+        Scalar invLen = 1 / std::sqrt( normal[1] * normal[1] + normal[2] * normal[2] );
+        *tangent      = Vector3( 0, normal[2] * invLen, -normal[1] * invLen );
+    }
+    *bitangent = normal.cross( *tangent );
+}
+
+inline std::pair<Vector3, Scalar> sampleHemisphereCosineWeighted( Vector2 u ) {
+    Vector3 dir;
+
+    Scalar cosTheta = std::sqrt( u[0] );
+    Scalar sinTheta = std::sqrt( 1 - u[0] );
+    Scalar phi      = 2 * Math::Pi * u[1];
+
+    dir[0] = sinTheta * std::cos( phi );
+    dir[1] = sinTheta * std::sin( phi );
+    dir[2] = cosTheta;
+
+    return { dir, cosTheta / Math::Pi };
+}
+
+inline std::pair<Vector3, Scalar> sampleHemisphere( Vector2 u ) {
+    Vector3 dir;
+
+    Scalar cosTheta = u[0];
+    Scalar sinTheta = 1 - u[0];
+    Scalar phi      = 2 * Math::Pi * u[1];
+
+    dir[0] = sinTheta * std::cos( phi );
+    dir[1] = sinTheta * std::sin( phi );
+    dir[2] = cosTheta;
+
+    return { dir, 1_ra / ( 2_ra * Math::Pi ) };
+}
+
+inline std::pair<Vector3, Scalar> sampleSpecular( Vector2 u, Scalar roughness ) {
+    Vector3 dir;
+
+    Scalar cosTheta = std::pow( u[0], 1_ra / ( roughness + 2 ) );
+    Scalar sinTheta = 1 - u[0];
+    Scalar phi      = 2 * Math::Pi * u[1];
+
+    dir[0] = sinTheta * std::cos( phi );
+    dir[1] = sinTheta * std::sin( phi );
+    dir[2] = cosTheta;
+
+    return { dir, ( roughness + 2 ) * std::pow( u[0], roughness ) / 2 * Math::Pi };
+}
+
+inline Scalar cosineWeightedPDF( Vector3 dir, Vector3 normal ) {
+    dir.normalize();
+
+    Scalar cosTheta = dir.dot( normal );
+
+    return cosTheta / M_PI;
+}
+
+inline Scalar specularPDF( Vector3 dir, Vector3 normal, Scalar roughness ) {
+    Scalar cosTheta = normal.dot( dir );
+    return ( roughness + 2 ) * std::pow( cosTheta, roughness ) / 2 * Math::Pi;
+}
+
 //
 // Quaternion functions
 //

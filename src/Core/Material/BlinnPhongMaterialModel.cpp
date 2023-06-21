@@ -1,7 +1,7 @@
 #include <Core/Material/BlinnPhongMaterialModel.hpp>
+#include <Core/Math/LinearAlgebra.hpp>
 #include <Core/Utils/Log.hpp>
 
-#include "BlinnPhongMaterialModel.hpp"
 #include <algorithm>
 
 namespace Ra {
@@ -48,7 +48,7 @@ std::optional<std::pair<Vector3, Scalar>>
 BlinnPhongMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector2 u ) {
     Vector3 halfway, tangent, bitangent;
 
-    coordinateSystem( normal, &tangent, &bitangent );
+    Math::coordinateSystem( normal, &tangent, &bitangent );
 
     Vector3 rgbToLuminance { 0.2126_ra, 0.7152_ra, 0.0722_ra };
     Scalar dIntensity   = m_kd.rgb().dot( rgbToLuminance );
@@ -65,14 +65,14 @@ BlinnPhongMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector2 u ) {
 
     // diffuse part
     if ( distrib < dIntensity ) {
-        std::pair<Vector3, Scalar> smpl = sampleHemisphereCosineWeighted( u );
+        std::pair<Vector3, Scalar> smpl = Math::sampleHemisphereCosineWeighted( u );
         Vector3 wi(
             smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );
         std::pair<Vector3, Scalar> result { wi, smpl.second };
         return result;
     }
     else if ( distrib < dIntensity + sIntensity ) { // specular part
-        std::pair<Vector3, Scalar> smpl = sampleSpecular( u, roughness );
+        std::pair<Vector3, Scalar> smpl = Math::sampleSpecular( u, roughness );
         Vector3 wi(
             smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );
         std::pair<Vector3, Scalar> result { wi, smpl.second };
@@ -92,29 +92,10 @@ Scalar BlinnPhongMaterialModel::PDF( Vector3 inDir, Vector3 outDir, Vector3 norm
     dIntensity /= diffSpecNorm;
     sIntensity /= diffSpecNorm;
 
-    return std::clamp( dIntensity * cosineWeightedPDF( outDir, normal ) +
-                           sIntensity * specularPDF( outDir, normal ),
+    return std::clamp( dIntensity * Math::cosineWeightedPDF( outDir, normal ) +
+                           sIntensity * Math::specularPDF( outDir, normal, getRoughness() ),
                        0_ra,
                        1_ra );
-}
-
-std::pair<Vector3, Scalar> BlinnPhongMaterialModel::sampleSpecular( Vector2 u, Scalar roughness ) {
-    Vector3 dir;
-
-    Scalar cosTheta = std::pow( u[0], 1_ra / ( roughness + 2 ) );
-    Scalar sinTheta = 1 - u[0];
-    Scalar phi      = 2 * Math::Pi * u[1];
-
-    dir[0] = sinTheta * std::cos( phi );
-    dir[1] = sinTheta * std::sin( phi );
-    dir[2] = cosTheta;
-
-    return { dir, ( roughness + 2 ) * std::pow( u[0], roughness ) / 2 * Math::Pi };
-}
-
-Scalar BlinnPhongMaterialModel::specularPDF( Vector3 dir, Vector3 normal, Scalar roughness ) {
-    Scalar cosTheta = normal.dot( dir );
-    return ( roughness + 2 ) * std::pow( cosTheta, roughness ) / 2 * Math::Pi;
 }
 
 Scalar BlinnPhongMaterialModel::getRoughness() {

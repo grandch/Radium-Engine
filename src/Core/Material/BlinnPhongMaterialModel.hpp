@@ -36,9 +36,6 @@ class RA_CORE_API BlinnPhongMaterialModel : public MaterialModel
     sample( Vector3 inDir, Vector3 normal, Vector2 u ) override;
     Scalar PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) override;
 
-    std::pair<Vector3, Scalar> sampleSpecular( Vector2 u, Scalar roughness );
-    Scalar specularPDF( Vector3 dir, Vector3 normal, Scalar roughness );
-
     Scalar getRoughness();
 
     static std::mt19937* getRandomEngine();

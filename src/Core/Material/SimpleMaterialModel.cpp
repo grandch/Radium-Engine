@@ -1,6 +1,6 @@
 #include <Core/Material/SimpleMaterialModel.hpp>
+#include <Core/Math/LinearAlgebra.hpp>
 
-#include "SimpleMaterialModel.hpp"
 #include <Core/Utils/Log.hpp>
 
 namespace Ra {
@@ -51,10 +51,10 @@ std::optional<std::pair<Vector3, Scalar>>
 LambertianMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector2 u ) {
     // create local to normal coordinate system
     Vector3 tangent, bitangent;
-    coordinateSystem( normal, &tangent, &bitangent );
+    Math::coordinateSystem( normal, &tangent, &bitangent );
 
     // sample point on hemisphere with cosine-weighted distribution
-    std::pair<Vector3, Scalar> smpl = sampleHemisphereCosineWeighted( u );
+    std::pair<Vector3, Scalar> smpl = Math::sampleHemisphereCosineWeighted( u );
 
     // transform sampled point from local to world coodinate system
     Vector3 wi( smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );
@@ -64,7 +64,7 @@ LambertianMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector2 u ) {
 }
 
 Scalar LambertianMaterialModel::PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) {
-    return cosineWeightedPDF( outDir, normal );
+    return Math::cosineWeightedPDF( outDir, normal );
 }
 
 } // namespace Material
