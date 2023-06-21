@@ -41,7 +41,7 @@ class RA_CORE_API BlinnPhongMaterialModel : public MaterialModel
 
     Scalar getRoughness();
 
-    static std::mt19937 getRandomEngine();
+    static std::mt19937* getRandomEngine();
 
     /// DATA MEMBERS
     Core::Utils::Color m_kd { 0.7_ra, 0.7_ra, 0.7_ra };

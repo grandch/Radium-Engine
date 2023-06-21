@@ -124,9 +124,9 @@ Scalar BlinnPhongMaterialModel::getRoughness() {
     return 1 - m_ns;
 }
 
-std::mt19937 BlinnPhongMaterialModel::getRandomEngine() {
+std::mt19937* BlinnPhongMaterialModel::getRandomEngine() {
 
-    return m_randomEngine;
+    return &m_randomEngine;
 }
 
 } // namespace Material
