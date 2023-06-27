@@ -12,7 +12,7 @@ class RA_CORE_API MersenneTwisterGenerator : public UniformGenerator {
     MersenneTwisterGenerator();
     ~MersenneTwisterGenerator();
 
-    Scalar get1D();
+    Scalar get1D() override;
 
     static std::mt19937 m_randomEngine = std::mt19937( std::time( nullptr ) );
 };

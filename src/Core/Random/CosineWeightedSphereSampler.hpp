@@ -10,8 +10,8 @@ class RA_CORE_API CosineWeightedSphereSampler : public SphereSampler {
     CosineWeightedSphereSampler();
     ~CosineWeightedSphereSampler();
 
-    std::pair<Vector2, Scalar> getPoint( UniformGenerator* generator );
-    std::pair<Vector3, Scalar> getDir( UniformGenerator* generator );
+    static std::pair<Vector2, Scalar> getPoint( UniformGenerator* generator ) override;
+    static std::pair<Vector3, Scalar> getDir( UniformGenerator* generator ) override;
 };
 
 } // namespace Random

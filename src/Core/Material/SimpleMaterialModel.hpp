@@ -25,6 +25,11 @@ class RA_CORE_API SimpleMaterialModel : public MaterialModel
     bool hasDiffuseTexture() const { return m_hasTexDiffuse; }
     bool hasOpacityTexture() const { return m_hasTexOpacity; }
 
+    Utils::Color evalBSDF( Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv ) override;
+    std::optional<std::pair<Vector3, Scalar>>
+    sample( Vector3 inDir, Vector3 normal, Vector2 u ) override;
+    Scalar PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) override;
+
     /// DATA MEMBERS
     Core::Utils::Color m_kd { 0.9_ra, 0.9_ra, 0.9_ra };
     Scalar m_alpha { 1_ra };

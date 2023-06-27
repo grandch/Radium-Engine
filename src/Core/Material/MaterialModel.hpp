@@ -39,10 +39,10 @@ class RA_CORE_API MaterialModel : public Utils::ObservableVoid
      *  w_i : incident direction, w_o : outgoing direction, normal : geometric normal direction.
      *  w_i, w_o and normal are in world space.
      */
-    virtual Utils::Color evalBSDF( Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv );
+    virtual Utils::Color evalBSDF( Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv ) = 0;
     virtual std::optional<std::pair<Vector3, Scalar>>
-    sample( Vector3 inDir, Vector3 normal, Vector2 u );
-    virtual Scalar PDF( Vector3 inDir, Vector3 outDir, Vector3 normal );
+    sample( Vector3 inDir, Vector3 normal, Vector2 u ) = 0;
+    virtual Scalar PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) = 0;
 
   private:
     std::string m_materialType;

@@ -1,7 +1,10 @@
 #include <Core/Material/SimpleMaterialModel.hpp>
 #include <Core/Math/LinearAlgebra.hpp>
+#include <Core/Random/CosineWeightedSphereSampler.hpp>
+#include <Random/MersenneTwisterGenerator.hpp>
 
 #include <Core/Utils/Log.hpp>
+#include "SimpleMaterialModel.hpp"
 
 namespace Ra {
 namespace Core {
@@ -20,6 +23,17 @@ void SimpleMaterialModel::displayInfo() const {
     print( true, " Opacity        : ", m_alpha );
     print( hasDiffuseTexture(), " Kd Texture     : ", m_texDiffuse );
     print( hasOpacityTexture(), " Alpha Texture  : ", m_texOpacity );
+}
+
+Utils::Color SimpleMaterialModel::evalBSDF( Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv ) {
+    return m_kd;
+}
+std::optional<std::pair<Vector3, Scalar>>
+SimpleMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector2 u ) {
+    return {};
+}
+Scalar SimpleMaterialModel::PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) {
+    return 0_ra;
 }
 
 void LambertianMaterialModel::displayInfo() const {
@@ -54,7 +68,8 @@ LambertianMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector2 u ) {
     Math::coordinateSystem( normal, &tangent, &bitangent );
 
     // sample point on hemisphere with cosine-weighted distribution
-    std::pair<Vector3, Scalar> smpl = Math::sampleHemisphereCosineWeighted( u );
+    Random::MersenneTwisterGenerator generator = Random::MersenneTwisterGenerator();
+    std::pair<Vector3, Scalar> smpl = Random::CosineWeightedSphereSampler::getDir(&generator);
 
     // transform sampled point from local to world coodinate system
     Vector3 wi( smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );

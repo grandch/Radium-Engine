@@ -58,14 +58,14 @@ BlinnPhongMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector2 u ) {
     dIntensity /= diffSpecNorm;
     sIntensity /= diffSpecNorm;
 
-    std::uniform_real_distribution<Scalar> unifDistributionRand { 0, 1 };
-    Scalar distrib = unifDistributionRand( m_randomEngine );
+    Random::MersenneTwisterGenerator generator = Random::MersenneTwisterGenerator();
+    Scalar distrib = generator.get1D();
 
     Scalar roughness = getRoughness();
 
     // diffuse part
     if ( distrib < dIntensity ) {
-        std::pair<Vector3, Scalar> smpl = Math::sampleHemisphereCosineWeighted( u );
+        std::pair<Vector3, Scalar> smpl = Random::CosineWeightedSphereSampler::getDir(&generator);
         Vector3 wi(
             smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );
         std::pair<Vector3, Scalar> result { wi, smpl.second };
