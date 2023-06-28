@@ -72,7 +72,7 @@ BlinnPhongMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector2 u ) {
         return result;
     }
     else if ( distrib < dIntensity + sIntensity ) { // specular part
-        std::pair<Vector3, Scalar> smpl = Math::sampleSpecular( u, roughness );
+        std::pair<Vector3, Scalar> smpl = Random::BlinnPhongSphereSampler( &generator, roughness );
         Vector3 wi(
             smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );
         std::pair<Vector3, Scalar> result { wi, smpl.second };
