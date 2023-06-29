@@ -41,7 +41,7 @@ class RA_CORE_API MaterialModel : public Utils::ObservableVoid
      */
     virtual Utils::Color evalBSDF( Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv ) = 0;
     virtual std::optional<std::pair<Vector3, Scalar>>
-    sample( Vector3 inDir, Vector3 normal, Vector2 u ) = 0;
+    sample( Vector3 inDir, Vector3 normal, Vector3 tangent, Vector3 bitangent, Vector2 u ) = 0;
     virtual Scalar PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) = 0;
 
   private:

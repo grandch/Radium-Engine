@@ -27,7 +27,7 @@ Utils::Color SimpleMaterialModel::evalBSDF( Vector3 w_i, Vector3 w_o, Vector3 no
     return m_kd;
 }
 std::optional<std::pair<Vector3, Scalar>>
-SimpleMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector2 u ) {
+SimpleMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector3 tangent, Vector3 bitangent, Vector2 u ) {
     return {};
 }
 Scalar SimpleMaterialModel::PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) {
@@ -60,11 +60,7 @@ Utils::Color Material::LambertianMaterialModel::evalBSDF( Vector3 w_i,
 }
 
 std::optional<std::pair<Vector3, Scalar>>
-LambertianMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector2 u ) {
-    // create local to normal coordinate system
-    Vector3 tangent, bitangent;
-    Math::coordinateSystem( normal, &tangent, &bitangent );
-
+LambertianMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector3 tangent, Vector3 bitangent, Vector2 u ) {
     // sample point on hemisphere with cosine-weighted distribution
     Core::Random::MersenneTwisterGenerator generator = Core::Random::MersenneTwisterGenerator();
     std::pair<Vector3, Scalar> smpl = m_sampler.getDir(&generator);

@@ -46,10 +46,8 @@ Utils::Color Material::BlinnPhongMaterialModel::evalBSDF( Vector3 w_i,
 }
 
 std::optional<std::pair<Vector3, Scalar>>
-BlinnPhongMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector2 u ) {
-    Vector3 halfway, tangent, bitangent;
-
-    Math::coordinateSystem( normal, &tangent, &bitangent );
+BlinnPhongMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector3 tangent, Vector3 bitangent, Vector2 u ) {
+    Vector3 halfway;
 
     Vector3 rgbToLuminance { 0.2126_ra, 0.7152_ra, 0.0722_ra };
     Scalar dIntensity   = m_kd.rgb().dot( rgbToLuminance );
