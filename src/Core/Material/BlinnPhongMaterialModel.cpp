@@ -1,6 +1,7 @@
 #include <Core/Material/BlinnPhongMaterialModel.hpp>
 #include <Core/Math/LinearAlgebra.hpp>
 #include <Core/Utils/Log.hpp>
+#include <Core/Random/MersenneTwisterGenerator.hpp>
 
 #include <algorithm>
 
@@ -58,21 +59,21 @@ BlinnPhongMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector2 u ) {
     dIntensity /= diffSpecNorm;
     sIntensity /= diffSpecNorm;
 
-    Random::MersenneTwisterGenerator generator = Random::MersenneTwisterGenerator();
+    Core::Random::MersenneTwisterGenerator generator = Core::Random::MersenneTwisterGenerator();
     Scalar distrib = generator.get1D();
 
     Scalar roughness = getRoughness();
 
     // diffuse part
     if ( distrib < dIntensity ) {
-        std::pair<Vector3, Scalar> smpl = Random::CosineWeightedSphereSampler::getDir(&generator);
+        std::pair<Vector3, Scalar> smpl = m_sampler.CosineWeightedSphereSampler::getDir(&generator);
         Vector3 wi(
             smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );
         std::pair<Vector3, Scalar> result { wi, smpl.second };
         return result;
     }
     else if ( distrib < dIntensity + sIntensity ) { // specular part
-        std::pair<Vector3, Scalar> smpl = Random::BlinnPhongSphereSampler( &generator, roughness );
+        std::pair<Vector3, Scalar> smpl = m_sampler.getDir( &generator, roughness );
         Vector3 wi(
             smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );
         std::pair<Vector3, Scalar> result { wi, smpl.second };
@@ -103,11 +104,6 @@ Scalar BlinnPhongMaterialModel::getRoughness() {
     if ( ns > 1 ) { ns /= 128_ra; }
     Scalar r = std::clamp( 1 - ns, 0.04_ra, 0.96_ra );
     return 1 - m_ns;
-}
-
-std::mt19937* BlinnPhongMaterialModel::getRandomEngine() {
-
-    return &m_randomEngine;
 }
 
 } // namespace Material

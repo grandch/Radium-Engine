@@ -2,6 +2,7 @@
 
 #include <Core/Material/MaterialModel.hpp>
 #include <Core/Utils/Color.hpp>
+#include <Core/Random/CosineWeightedSphereSampler.hpp>
 
 namespace Ra {
 namespace Core {
@@ -42,7 +43,7 @@ class RA_CORE_API SimpleMaterialModel : public MaterialModel
 class RA_CORE_API LambertianMaterialModel : public SimpleMaterialModel
 {
   public:
-    explicit LambertianMaterialModel( const std::string& name = "" ) :
+    explicit LambertianMaterialModel( const std::string& name = "" ) : m_sampler(Core::Random::CosineWeightedSphereSampler()),
         SimpleMaterialModel( name, "Lambertian" ) {}
     ~LambertianMaterialModel() override = default;
 
@@ -60,6 +61,8 @@ class RA_CORE_API LambertianMaterialModel : public SimpleMaterialModel
     /// DATA MEMBERS
     std::string m_texNormal;
     bool m_hasTexNormal { false };
+
+    Core::Random::CosineWeightedSphereSampler m_sampler;
 };
 
 } // namespace Material

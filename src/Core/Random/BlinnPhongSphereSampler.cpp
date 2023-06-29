@@ -1,5 +1,9 @@
 #include "BlinnPhongSphereSampler.hpp"
 
+namespace Ra {
+namespace Core {
+namespace Random {
+    
 std::pair<Vector2, Scalar>
 Ra::Core::Random::BlinnPhongSphereSampler::getPoint( UniformGenerator* generator, Scalar roughness ) {
     return {{std::pow( u[0], 1_ra / ( roughness + 2 ) ), 2 * Math::Pi * u[1]}, ( roughness + 2 ) * std::pow( u[0], roughness ) / 2 * Math::Pi};
@@ -20,3 +24,7 @@ Ra::Core::Random::BlinnPhongSphereSampler::getDir( UniformGenerator* generator, 
 
     return { dir, ( roughness + 2 ) * std::pow( u[0], roughness ) / 2 * Math::Pi };
 }
+
+} // namespace Random
+} // namespace Core
+} // namespace Ra

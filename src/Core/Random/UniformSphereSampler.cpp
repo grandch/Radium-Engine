@@ -1,5 +1,9 @@
 #include "UniformSphereSampler.hpp"
 
+namespace Ra {
+namespace Core {
+namespace Random {
+
 std::pair<Vector2, Scalar> Ra::Core::Random::UniformSphereSampler::getPoint( UniformGenerator* generator ) {
     Vector2 u = generator->get2D();
     return {{u[0], 2 * Math::Pi * u[1]}, 1 / 2 * Math::Pi};
@@ -19,3 +23,7 @@ std::pair<Vector3, Scalar> Ra::Core::Random::UniformSphereSampler::getDir( Unifo
 
     return {dir, 1 / 2 * Math::Pi};
 }
+
+} // namespace Random
+} // namespace Core
+} // namespace Ra

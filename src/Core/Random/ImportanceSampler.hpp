@@ -7,8 +7,9 @@ namespace Core {
 namespace Random {
 
 class RA_CORE_API ImportanceSampler {
-    virtual ImportanceSampler() = 0;
-    virtual ~ImportanceSampler() = 0;
+  public:
+    ImportanceSampler() {};
+    ~ImportanceSampler() {};
 };
 
 } // namespace Random

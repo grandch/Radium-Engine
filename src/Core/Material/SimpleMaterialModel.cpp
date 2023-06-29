@@ -1,10 +1,8 @@
 #include <Core/Material/SimpleMaterialModel.hpp>
+#include <Core/Random/MersenneTwisterGenerator.hpp>
 #include <Core/Math/LinearAlgebra.hpp>
-#include <Core/Random/CosineWeightedSphereSampler.hpp>
-#include <Random/MersenneTwisterGenerator.hpp>
 
 #include <Core/Utils/Log.hpp>
-#include "SimpleMaterialModel.hpp"
 
 namespace Ra {
 namespace Core {
@@ -68,8 +66,8 @@ LambertianMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector2 u ) {
     Math::coordinateSystem( normal, &tangent, &bitangent );
 
     // sample point on hemisphere with cosine-weighted distribution
-    Random::MersenneTwisterGenerator generator = Random::MersenneTwisterGenerator();
-    std::pair<Vector3, Scalar> smpl = Random::CosineWeightedSphereSampler::getDir(&generator);
+    Core::Random::MersenneTwisterGenerator generator = Core::Random::MersenneTwisterGenerator();
+    std::pair<Vector3, Scalar> smpl = m_sampler.getDir(&generator);
 
     // transform sampled point from local to world coodinate system
     Vector3 wi( smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );

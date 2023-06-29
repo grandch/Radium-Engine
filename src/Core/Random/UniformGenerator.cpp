@@ -1,5 +1,9 @@
 #include "UniformGenerator.hpp"
 
+namespace Ra {
+namespace Core {
+namespace Random {
+
 Vector2 Ra::Core::Random::UniformGenerator::get2D() {
     return {get1D(), get1D()};
 }
@@ -17,3 +21,7 @@ VectorN Ra::Core::Random::UniformGenerator::getXD( int dim ) {
 
     return result;
 }
+
+} // namespace Random
+} // namespace Core
+} // namespace Ra

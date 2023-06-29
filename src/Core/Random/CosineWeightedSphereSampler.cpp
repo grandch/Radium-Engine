@@ -1,5 +1,9 @@
 #include "CosineWeightedSphereSampler.hpp"
 
+namespace Ra {
+namespace Core {
+namespace Random {
+
 std::pair<Vector2, Scalar> Ra::Core::Random::CosineWeightedSphereSampler::getPoint( UniformGenerator* generator ) {
     Vector2 u = generator->get2D();
     return {{std::sqrt( u[0] ), 2 * Math::Pi * u[1]}, u[0] / Math::Pi};
@@ -19,3 +23,7 @@ std::pair<Vector3, Scalar> Ra::Core::Random::CosineWeightedSphereSampler::getDir
 
     return {dir, u[0] / Math::Pi};
 }
+
+} // namespace Random
+} // namespace Core
+} // namespace Ra

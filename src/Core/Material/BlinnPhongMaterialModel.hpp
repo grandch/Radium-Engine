@@ -2,6 +2,8 @@
 
 #include <Core/Material/MaterialModel.hpp>
 #include <Core/Utils/Color.hpp>
+#include <Core/Random/BlinnPhongSphereSampler.hpp>
+
 #include <ctime>
 
 namespace Ra {
@@ -12,7 +14,7 @@ namespace Material {
 class RA_CORE_API BlinnPhongMaterialModel : public MaterialModel
 {
   public:
-    explicit BlinnPhongMaterialModel( const std::string& name = "" ) :
+    explicit BlinnPhongMaterialModel( const std::string& name = "" ) : m_sampler(Core::Random::BlinnPhongSphereSampler()),
         MaterialModel( name, "BlinnPhong" ) {}
     ~BlinnPhongMaterialModel() override = default;
 
@@ -38,8 +40,6 @@ class RA_CORE_API BlinnPhongMaterialModel : public MaterialModel
 
     Scalar getRoughness();
 
-    static std::mt19937* getRandomEngine();
-
     /// DATA MEMBERS
     Core::Utils::Color m_kd { 0.7_ra, 0.7_ra, 0.7_ra };
     Core::Utils::Color m_ks { 0.3_ra, 0.3_ra, 0.3_ra };
@@ -56,10 +56,8 @@ class RA_CORE_API BlinnPhongMaterialModel : public MaterialModel
     bool m_hasTexNormal { false };
     bool m_hasTexOpacity { false };
 
-    static std::mt19937 m_randomEngine;
+    Core::Random::BlinnPhongSphereSampler m_sampler;
 };
-
-std::mt19937 BlinnPhongMaterialModel::m_randomEngine = std::mt19937( std::time( nullptr ) );
 
 } // namespace Material
 } // namespace Core

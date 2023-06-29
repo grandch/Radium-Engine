@@ -9,8 +9,9 @@ namespace Core {
 namespace Random {
 
 class RA_CORE_API UniformGenerator {
-    virtual UniformGenerator() = 0;
-    virtual ~UniformGenerator() = 0;
+  public:
+    UniformGenerator() {};
+    ~UniformGenerator() {};
 
     virtual Scalar get1D() = 0;
     

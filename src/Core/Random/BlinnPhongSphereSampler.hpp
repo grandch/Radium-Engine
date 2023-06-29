@@ -1,17 +1,18 @@
 #pragma once
 
-#include <Core/Random/SphereSampler.hpp>
+#include <Core/Random/CosineWeightedSphereSampler.hpp>
 
 namespace Ra {
 namespace Core {
 namespace Random {
 
-class RA_CORE_API BlinnPhongSphereSampler : public SphereSampler {
-    BlinnPhongSphereSampler();
-    ~BlinnPhongSphereSampler();
+class RA_CORE_API BlinnPhongSphereSampler : public CosineWeightedSphereSampler {
+  public:
+    BlinnPhongSphereSampler() {};
+    ~BlinnPhongSphereSampler() {};
 
-    static std::pair<Vector2, Scalar> getPoint( UniformGenerator* generator, Scalar roughness ) override;
-    static std::pair<Vector3, Scalar> getDir( UniformGenerator* generator, Scalar roughness ) override;
+    std::pair<Vector2, Scalar> getPoint( UniformGenerator* generator, Scalar roughness );
+    std::pair<Vector3, Scalar> getDir( UniformGenerator* generator, Scalar roughness );
 };
 
 } // namespace Random
