@@ -13,6 +13,9 @@ class RA_CORE_API UniformSphereSampler : public SphereSampler {
 
     std::pair<Vector2, Scalar> getPoint( UniformGenerator* generator ) override;
     std::pair<Vector3, Scalar> getDir( UniformGenerator* generator ) override;
+
+    Scalar pdf( Vector3 dir, Vector3 normal ) override;
+    Scalar pdf( Vector2 point ) override;
 };
 
 } // namespace Random

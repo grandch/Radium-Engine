@@ -13,6 +13,9 @@ class RA_CORE_API BlinnPhongSphereSampler : public CosineWeightedSphereSampler {
 
     std::pair<Vector2, Scalar> getPoint( UniformGenerator* generator, Scalar roughness );
     std::pair<Vector3, Scalar> getDir( UniformGenerator* generator, Scalar roughness );
+
+    Scalar pdf( Vector3 dir, Vector3 normal, Scalar roughness );
+    Scalar pdf( Vector2 point, Scalar roughness );
 };
 
 } // namespace Random

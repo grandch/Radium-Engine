@@ -1,4 +1,6 @@
-#include "CosineWeightedSphereSampler.hpp"
+#include <Core/Random/CosineWeightedSphereSampler.hpp>
+
+#include <Core/Math/Math.hpp>
 
 namespace Ra {
 namespace Core {
@@ -22,6 +24,15 @@ std::pair<Vector3, Scalar> Ra::Core::Random::CosineWeightedSphereSampler::getDir
     dir[2] = cosTheta;
 
     return {dir, u[0] / Math::Pi};
+}
+
+Scalar CosineWeightedSphereSampler::pdf( Vector3 dir, Vector3 normal ) {
+    dir.normalize();
+    return dir.dot( normal ) / Math::Pi;
+}
+
+Scalar CosineWeightedSphereSampler::pdf( Vector2 point ) {
+    return point[0] / Math::Pi;
 }
 
 } // namespace Random

@@ -93,8 +93,8 @@ Scalar BlinnPhongMaterialModel::PDF( Vector3 inDir, Vector3 outDir, Vector3 norm
     dIntensity /= diffSpecNorm;
     sIntensity /= diffSpecNorm;
 
-    return std::clamp( dIntensity * Math::cosineWeightedPDF( outDir, normal ) +
-                           sIntensity * Math::specularPDF( outDir, normal, getRoughness() ),
+    return std::clamp( dIntensity * m_sampler.CosineWeightedSphereSampler::pdf( outDir, normal ) +
+                           sIntensity * m_sampler.pdf( outDir, normal, getRoughness() ),
                        0_ra,
                        1_ra );
 }

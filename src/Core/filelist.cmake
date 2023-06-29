@@ -1,6 +1,6 @@
 # ----------------------------------------------------
 # This file can be generated from a script:
-# To do so, run "./generateFilelistForModule.sh Core"
+# To do so, run "./generateFilelistForModule.sh Core" 
 # from ./scripts directory
 # ----------------------------------------------------
 
@@ -36,6 +36,11 @@ set(core_sources
     Material/BlinnPhongMaterialModel.cpp
     Material/MaterialModel.cpp
     Material/SimpleMaterialModel.cpp
+    Random/BlinnPhongSphereSampler.cpp
+    Random/CosineWeightedSphereSampler.cpp
+    Random/MersenneTwisterGenerator.cpp
+    Random/UniformGenerator.cpp
+    Random/UniformSphereSampler.cpp
     Resources/Resources.cpp
     Tasks/TaskQueue.cpp
     Utils/Attribs.cpp
@@ -110,6 +115,13 @@ set(core_headers
     Math/Math.hpp
     Math/Quadric.hpp
     RaCore.hpp
+    Random/BlinnPhongSphereSampler.hpp
+    Random/CosineWeightedSphereSampler.hpp
+    Random/ImportanceSampler.hpp
+    Random/MersenneTwisterGenerator.hpp
+    Random/SphereSampler.hpp
+    Random/UniformGenerator.hpp
+    Random/UniformSphereSampler.hpp
     Resources/Resources.hpp
     Tasks/Task.hpp
     Tasks/TaskQueue.hpp
@@ -139,3 +151,4 @@ set(core_headers
     Utils/TypesUtils.hpp
     Utils/Version.hpp
 )
+

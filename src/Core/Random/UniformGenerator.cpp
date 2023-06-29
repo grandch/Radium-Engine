@@ -1,4 +1,4 @@
-#include "UniformGenerator.hpp"
+#include <Core/Random/UniformGenerator.hpp>
 
 namespace Ra {
 namespace Core {
@@ -13,7 +13,9 @@ Vector3 Ra::Core::Random::UniformGenerator::get3D() {
 }
 
 VectorN Ra::Core::Random::UniformGenerator::getXD( int dim ) {
-    Eigen::Matrix<Scalar, dim, 1>; result;
+    VectorN result;
+
+    result.resize(dim, 1);
 
     for(int i = 0; i < dim; i++) {
         result[i] = get1D();

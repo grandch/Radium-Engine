@@ -1,10 +1,8 @@
-#include "MersenneTwisterGenerator.hpp"
+#include <Core/Random/MersenneTwisterGenerator.hpp>
 
 namespace Ra {
 namespace Core {
 namespace Random {
-
-Ra::Core::Random::MersenneTwisterGenerator::UniformGenerator() {}
 
 MersenneTwisterGenerator::MersenneTwisterGenerator() : m_randomEngine( std::mt19937( std::time( nullptr ) ) ) {}
 

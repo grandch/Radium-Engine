@@ -77,7 +77,7 @@ LambertianMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector2 u ) {
 }
 
 Scalar LambertianMaterialModel::PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) {
-    return Math::cosineWeightedPDF( outDir, normal );
+    return m_sampler.pdf(outDir, normal);
 }
 
 } // namespace Material

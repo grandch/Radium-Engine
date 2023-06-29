@@ -1,4 +1,6 @@
-#include "UniformSphereSampler.hpp"
+#include <Core/Random/UniformSphereSampler.hpp>
+
+#include <Core/Math/Math.hpp>
 
 namespace Ra {
 namespace Core {
@@ -22,6 +24,14 @@ std::pair<Vector3, Scalar> Ra::Core::Random::UniformSphereSampler::getDir( Unifo
     dir[2] = cosTheta;
 
     return {dir, 1 / 2 * Math::Pi};
+}
+
+Scalar UniformSphereSampler::pdf( Vector3 dir, Vector3 normal ) {
+    return 1 / 2 * Math::Pi;
+}
+
+Scalar UniformSphereSampler::pdf( Vector2 point ) {
+    return 1 / 2 * Math::Pi;
 }
 
 } // namespace Random
