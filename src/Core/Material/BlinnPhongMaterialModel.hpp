@@ -16,12 +16,10 @@ class RA_CORE_API BlinnPhongMaterialModel : public SimpleMaterialModel
 {
   public:
     explicit BlinnPhongMaterialModel( const std::string& name = "" ) :
-        m_sampler( Core::Random::BlinnPhongSphereSampler() ),
         SimpleMaterialModel( name, "BlinnPhong" ) {}
 
     explicit BlinnPhongMaterialModel( Core::Random::UniformGenerator* generator,
                                       const std::string& name = "" ) :
-        m_sampler( Core::Random::BlinnPhongSphereSampler() ),
         SimpleMaterialModel( name, "BlinnPhong", generator ) {}
 
     ~BlinnPhongMaterialModel() override = default;
@@ -54,8 +52,6 @@ class RA_CORE_API BlinnPhongMaterialModel : public SimpleMaterialModel
     bool m_hasTexSpecular { false };
     bool m_hasTexShininess { false };
     bool m_hasTexNormal { false };
-
-    Core::Random::BlinnPhongSphereSampler m_sampler;
 };
 
 } // namespace Material

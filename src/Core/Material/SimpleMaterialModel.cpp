@@ -67,7 +67,8 @@ std::optional<std::pair<Vector3, Scalar>> LambertianMaterialModel::sample( Vecto
                                                                            Vector3 bitangent,
                                                                            Vector2 u ) {
     // sample point on hemisphere with cosine-weighted distribution
-    std::pair<Vector3, Scalar> smpl = m_sampler.getDir( m_generator );
+    std::pair<Vector3, Scalar> smpl =
+        Core::Random::CosineWeightedSphereSampler::getDir( m_generator );
 
     // transform sampled point from local to world coodinate system
     Vector3 wi( smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );
@@ -77,7 +78,7 @@ std::optional<std::pair<Vector3, Scalar>> LambertianMaterialModel::sample( Vecto
 }
 
 Scalar LambertianMaterialModel::PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) {
-    return m_sampler.pdf( outDir, normal );
+    return Core::Random::CosineWeightedSphereSampler::pdf( outDir, normal );
 }
 
 } // namespace Material

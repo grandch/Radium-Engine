@@ -6,12 +6,14 @@ namespace Ra {
 namespace Core {
 namespace Random {
 
-std::pair<Vector2, Scalar> Ra::Core::Random::UniformSphereSampler::getPoint( UniformGenerator* generator ) {
+std::pair<Vector2, Scalar>
+Ra::Core::Random::UniformSphereSampler::getPointImplem( UniformGenerator* generator ) {
     Vector2 u = generator->get2D();
-    return {{u[0], 2 * Math::Pi * u[1]}, 1 / 2 * Math::Pi};
+    return { { u[0], 2 * Math::Pi * u[1] }, 1 / 2 * Math::Pi };
 }
 
-std::pair<Vector3, Scalar> Ra::Core::Random::UniformSphereSampler::getDir( UniformGenerator* generator ) {
+std::pair<Vector3, Scalar>
+Ra::Core::Random::UniformSphereSampler::getDirImplem( UniformGenerator* generator ) {
     Vector3 dir;
     Vector2 u = generator->get2D();
 
@@ -23,14 +25,14 @@ std::pair<Vector3, Scalar> Ra::Core::Random::UniformSphereSampler::getDir( Unifo
     dir[1] = sinTheta * std::sin( phi );
     dir[2] = cosTheta;
 
-    return {dir, 1 / 2 * Math::Pi};
+    return { dir, 1 / 2 * Math::Pi };
 }
 
-Scalar UniformSphereSampler::pdf( Vector3 dir, Vector3 normal ) {
+Scalar UniformSphereSampler::pdfImplem( Vector3 dir, Vector3 normal ) {
     return 1 / 2 * Math::Pi;
 }
 
-Scalar UniformSphereSampler::pdf( Vector2 point ) {
+Scalar UniformSphereSampler::pdfImplem( Vector2 point ) {
     return 1 / 2 * Math::Pi;
 }
 

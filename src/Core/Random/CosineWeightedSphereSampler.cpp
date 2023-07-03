@@ -6,12 +6,14 @@ namespace Ra {
 namespace Core {
 namespace Random {
 
-std::pair<Vector2, Scalar> Ra::Core::Random::CosineWeightedSphereSampler::getPoint( UniformGenerator* generator ) {
+std::pair<Vector2, Scalar>
+Ra::Core::Random::CosineWeightedSphereSampler::getPointImplem( UniformGenerator* generator ) {
     Vector2 u = generator->get2D();
-    return {{std::sqrt( u[0] ), 2 * Math::Pi * u[1]}, u[0] / Math::Pi};
+    return { { std::sqrt( u[0] ), 2 * Math::Pi * u[1] }, u[0] / Math::Pi };
 }
 
-std::pair<Vector3, Scalar> Ra::Core::Random::CosineWeightedSphereSampler::getDir( UniformGenerator* generator ) {
+std::pair<Vector3, Scalar>
+Ra::Core::Random::CosineWeightedSphereSampler::getDirImplem( UniformGenerator* generator ) {
     Vector3 dir;
     Vector2 u = generator->get2D();
 
@@ -23,15 +25,15 @@ std::pair<Vector3, Scalar> Ra::Core::Random::CosineWeightedSphereSampler::getDir
     dir[1] = sinTheta * std::sin( phi );
     dir[2] = cosTheta;
 
-    return {dir, u[0] / Math::Pi};
+    return { dir, u[0] / Math::Pi };
 }
 
-Scalar CosineWeightedSphereSampler::pdf( Vector3 dir, Vector3 normal ) {
+Scalar CosineWeightedSphereSampler::pdfImplem( Vector3 dir, Vector3 normal ) {
     dir.normalize();
     return dir.dot( normal ) / Math::Pi;
 }
 
-Scalar CosineWeightedSphereSampler::pdf( Vector2 point ) {
+Scalar CosineWeightedSphereSampler::pdfImplem( Vector2 point ) {
     return point[0] / Math::Pi;
 }
 

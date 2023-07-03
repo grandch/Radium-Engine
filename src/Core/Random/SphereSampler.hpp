@@ -7,17 +7,22 @@ namespace Ra {
 namespace Core {
 namespace Random {
 
+template <class T>
 class RA_CORE_API SphereSampler
 {
   public:
     SphereSampler() {};
     ~SphereSampler() {};
 
-    virtual std::pair<Vector2, Scalar> getPoint( UniformGenerator* generator ) = 0;
-    virtual std::pair<Vector3, Scalar> getDir( UniformGenerator* generator )   = 0;
+    static std::pair<Vector2, Scalar> getPoint( UniformGenerator* generator ) {
+        T::getPointImplem( generator );
+    }
+    static std::pair<Vector3, Scalar> getDir( UniformGenerator* generator ) {
+        T::getDirImplem( generator );
+    }
 
-    virtual Scalar pdf( Vector3 dir, Vector3 normal ) = 0;
-    virtual Scalar pdf( Vector2 point )               = 0;
+    static Scalar pdf( Vector3 dir, Vector3 normal ) { T::pdfImplem( dir, normal ); }
+    static Scalar pdf( Vector2 point ) { T::pdfImplem( point ); }
 };
 
 } // namespace Random

@@ -66,14 +66,15 @@ std::optional<std::pair<Vector3, Scalar>> BlinnPhongMaterialModel::sample( Vecto
     // diffuse part
     if ( distrib < dIntensity ) {
         std::pair<Vector3, Scalar> smpl =
-            m_sampler.CosineWeightedSphereSampler::getDir( m_generator );
+            Core::Random::CosineWeightedSphereSampler::getDir( m_generator );
         Vector3 wi(
             smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );
         std::pair<Vector3, Scalar> result { wi, smpl.second };
         return result;
     }
     else if ( distrib < dIntensity + sIntensity ) { // specular part
-        std::pair<Vector3, Scalar> smpl = m_sampler.getDir( m_generator, roughness );
+        std::pair<Vector3, Scalar> smpl =
+            Core::Random::BlinnPhongSphereSampler::getDir( m_generator, roughness );
         Vector3 wi(
             smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );
         std::pair<Vector3, Scalar> result { wi, smpl.second };
@@ -93,10 +94,12 @@ Scalar BlinnPhongMaterialModel::PDF( Vector3 inDir, Vector3 outDir, Vector3 norm
     dIntensity /= diffSpecNorm;
     sIntensity /= diffSpecNorm;
 
-    return std::clamp( dIntensity * m_sampler.CosineWeightedSphereSampler::pdf( outDir, normal ) +
-                           sIntensity * m_sampler.pdf( outDir, normal, getRoughness() ),
-                       0_ra,
-                       1_ra );
+    return std::clamp(
+        dIntensity * Core::Random::CosineWeightedSphereSampler::pdf( outDir, normal ) +
+            sIntensity *
+                Core::Random::BlinnPhongSphereSampler::pdf( outDir, normal, getRoughness() ),
+        0_ra,
+        1_ra );
 }
 
 Scalar BlinnPhongMaterialModel::getRoughness() {

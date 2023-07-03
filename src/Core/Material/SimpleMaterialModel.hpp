@@ -55,12 +55,10 @@ class RA_CORE_API LambertianMaterialModel : public SimpleMaterialModel
 {
   public:
     explicit LambertianMaterialModel( const std::string& name = "" ) :
-        m_sampler( Core::Random::CosineWeightedSphereSampler() ),
         SimpleMaterialModel( name, "Lambertian" ) {}
 
     explicit LambertianMaterialModel( Core::Random::UniformGenerator* generator,
                                       const std::string& name = "" ) :
-        m_sampler( Core::Random::CosineWeightedSphereSampler() ),
         SimpleMaterialModel( name, "Lambertian", generator ) {}
 
     ~LambertianMaterialModel() override = default;
@@ -79,8 +77,6 @@ class RA_CORE_API LambertianMaterialModel : public SimpleMaterialModel
     /// DATA MEMBERS
     std::string m_texNormal;
     bool m_hasTexNormal { false };
-
-    Core::Random::CosineWeightedSphereSampler m_sampler;
 };
 
 } // namespace Material

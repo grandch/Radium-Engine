@@ -6,16 +6,17 @@ namespace Ra {
 namespace Core {
 namespace Random {
 
-class RA_CORE_API CosineWeightedSphereSampler : public SphereSampler {
+class RA_CORE_API CosineWeightedSphereSampler : public SphereSampler<CosineWeightedSphereSampler>
+{
   public:
     CosineWeightedSphereSampler() {};
     ~CosineWeightedSphereSampler() {};
 
-    std::pair<Vector2, Scalar> getPoint( UniformGenerator* generator ) override;
-    std::pair<Vector3, Scalar> getDir( UniformGenerator* generator ) override;
+    static std::pair<Vector2, Scalar> getPointImplem( UniformGenerator* generator );
+    static std::pair<Vector3, Scalar> getDirImplem( UniformGenerator* generator );
 
-    Scalar pdf( Vector3 dir, Vector3 normal ) override;
-    Scalar pdf( Vector2 point ) override;
+    static Scalar pdfImplem( Vector3 dir, Vector3 normal );
+    static Scalar pdfImplem( Vector2 point );
 };
 
 } // namespace Random
