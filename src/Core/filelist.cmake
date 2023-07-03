@@ -117,7 +117,6 @@ set(core_headers
     RaCore.hpp
     Random/BlinnPhongSphereSampler.hpp
     Random/CosineWeightedSphereSampler.hpp
-    Random/ImportanceSampler.hpp
     Random/MersenneTwisterGenerator.hpp
     Random/SphereSampler.hpp
     Random/UniformGenerator.hpp
