@@ -1,5 +1,4 @@
 #include <Core/Material/SimpleMaterialModel.hpp>
-#include <Core/Random/MersenneTwisterGenerator.hpp>
 #include <Core/Math/LinearAlgebra.hpp>
 
 #include <Core/Utils/Log.hpp>
@@ -26,8 +25,11 @@ void SimpleMaterialModel::displayInfo() const {
 Utils::Color SimpleMaterialModel::evalBSDF( Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv ) {
     return m_kd;
 }
-std::optional<std::pair<Vector3, Scalar>>
-SimpleMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector3 tangent, Vector3 bitangent, Vector2 u ) {
+std::optional<std::pair<Vector3, Scalar>> SimpleMaterialModel::sample( Vector3 inDir,
+                                                                       Vector3 normal,
+                                                                       Vector3 tangent,
+                                                                       Vector3 bitangent,
+                                                                       Vector2 u ) {
     return {};
 }
 Scalar SimpleMaterialModel::PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) {
@@ -59,11 +61,13 @@ Utils::Color Material::LambertianMaterialModel::evalBSDF( Vector3 w_i,
     return m_kd / M_PI;
 }
 
-std::optional<std::pair<Vector3, Scalar>>
-LambertianMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector3 tangent, Vector3 bitangent, Vector2 u ) {
+std::optional<std::pair<Vector3, Scalar>> LambertianMaterialModel::sample( Vector3 inDir,
+                                                                           Vector3 normal,
+                                                                           Vector3 tangent,
+                                                                           Vector3 bitangent,
+                                                                           Vector2 u ) {
     // sample point on hemisphere with cosine-weighted distribution
-    Core::Random::MersenneTwisterGenerator generator = Core::Random::MersenneTwisterGenerator();
-    std::pair<Vector3, Scalar> smpl = m_sampler.getDir(&generator);
+    std::pair<Vector3, Scalar> smpl = m_sampler.getDir( m_generator );
 
     // transform sampled point from local to world coodinate system
     Vector3 wi( smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );
@@ -73,7 +77,7 @@ LambertianMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector3 tangent,
 }
 
 Scalar LambertianMaterialModel::PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) {
-    return m_sampler.pdf(outDir, normal);
+    return m_sampler.pdf( outDir, normal );
 }
 
 } // namespace Material

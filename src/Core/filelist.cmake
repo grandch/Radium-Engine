@@ -1,6 +1,6 @@
 # ----------------------------------------------------
 # This file can be generated from a script:
-# To do so, run "./generateFilelistForModule.sh Core" 
+# To do so, run "./generateFilelistForModule.sh Core"
 # from ./scripts directory
 # ----------------------------------------------------
 
@@ -150,4 +150,3 @@ set(core_headers
     Utils/TypesUtils.hpp
     Utils/Version.hpp
 )
-

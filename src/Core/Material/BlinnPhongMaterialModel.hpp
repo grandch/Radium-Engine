@@ -1,8 +1,9 @@
 #pragma once
 
-#include <Core/Material/MaterialModel.hpp>
-#include <Core/Utils/Color.hpp>
+#include <Core/Material/SimpleMaterialModel.hpp>
 #include <Core/Random/BlinnPhongSphereSampler.hpp>
+#include <Core/Random/UniformGenerator.hpp>
+#include <Core/Utils/Color.hpp>
 
 #include <ctime>
 
@@ -11,11 +12,18 @@ namespace Core {
 namespace Material {
 
 // RADIUM SUPPORTED MATERIALS
-class RA_CORE_API BlinnPhongMaterialModel : public MaterialModel
+class RA_CORE_API BlinnPhongMaterialModel : public SimpleMaterialModel
 {
   public:
-    explicit BlinnPhongMaterialModel( const std::string& name = "" ) : m_sampler(Core::Random::BlinnPhongSphereSampler()),
-        MaterialModel( name, "BlinnPhong" ) {}
+    explicit BlinnPhongMaterialModel( const std::string& name = "" ) :
+        m_sampler( Core::Random::BlinnPhongSphereSampler() ),
+        SimpleMaterialModel( name, "BlinnPhong" ) {}
+
+    explicit BlinnPhongMaterialModel( Core::Random::UniformGenerator* generator,
+                                      const std::string& name = "" ) :
+        m_sampler( Core::Random::BlinnPhongSphereSampler() ),
+        SimpleMaterialModel( name, "BlinnPhong", generator ) {}
+
     ~BlinnPhongMaterialModel() override = default;
 
     /// DEBUG
@@ -23,15 +31,11 @@ class RA_CORE_API BlinnPhongMaterialModel : public MaterialModel
 
     /// QUERY
 
-    bool hasDiffuseTexture() const { return m_hasTexDiffuse; }
-
     bool hasSpecularTexture() const { return m_hasTexSpecular; }
 
     bool hasShininessTexture() const { return m_hasTexShininess; }
 
     bool hasNormalTexture() const { return m_hasTexNormal; }
-
-    bool hasOpacityTexture() const { return m_hasTexOpacity; }
 
     Utils::Color evalBSDF( Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv ) override;
     std::optional<std::pair<Vector3, Scalar>>
@@ -44,17 +48,12 @@ class RA_CORE_API BlinnPhongMaterialModel : public MaterialModel
     Core::Utils::Color m_kd { 0.7_ra, 0.7_ra, 0.7_ra };
     Core::Utils::Color m_ks { 0.3_ra, 0.3_ra, 0.3_ra };
     Scalar m_ns { 64_ra };
-    Scalar m_alpha { 1_ra };
-    std::string m_texDiffuse;
     std::string m_texSpecular;
     std::string m_texShininess;
     std::string m_texNormal;
-    std::string m_texOpacity;
-    bool m_hasTexDiffuse { false };
     bool m_hasTexSpecular { false };
     bool m_hasTexShininess { false };
     bool m_hasTexNormal { false };
-    bool m_hasTexOpacity { false };
 
     Core::Random::BlinnPhongSphereSampler m_sampler;
 };

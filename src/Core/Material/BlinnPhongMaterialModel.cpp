@@ -1,7 +1,6 @@
 #include <Core/Material/BlinnPhongMaterialModel.hpp>
 #include <Core/Math/LinearAlgebra.hpp>
 #include <Core/Utils/Log.hpp>
-#include <Core/Random/MersenneTwisterGenerator.hpp>
 
 #include <algorithm>
 
@@ -45,8 +44,11 @@ Utils::Color Material::BlinnPhongMaterialModel::evalBSDF( Vector3 w_i,
     Utils::Color bsdf = diffuse + specular;
 }
 
-std::optional<std::pair<Vector3, Scalar>>
-BlinnPhongMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector3 tangent, Vector3 bitangent, Vector2 u ) {
+std::optional<std::pair<Vector3, Scalar>> BlinnPhongMaterialModel::sample( Vector3 inDir,
+                                                                           Vector3 normal,
+                                                                           Vector3 tangent,
+                                                                           Vector3 bitangent,
+                                                                           Vector2 u ) {
     Vector3 halfway;
 
     Vector3 rgbToLuminance { 0.2126_ra, 0.7152_ra, 0.0722_ra };
@@ -57,21 +59,21 @@ BlinnPhongMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector3 tangent,
     dIntensity /= diffSpecNorm;
     sIntensity /= diffSpecNorm;
 
-    Core::Random::MersenneTwisterGenerator generator = Core::Random::MersenneTwisterGenerator();
-    Scalar distrib = generator.get1D();
+    Scalar distrib = m_generator->get1D();
 
     Scalar roughness = getRoughness();
 
     // diffuse part
     if ( distrib < dIntensity ) {
-        std::pair<Vector3, Scalar> smpl = m_sampler.CosineWeightedSphereSampler::getDir(&generator);
+        std::pair<Vector3, Scalar> smpl =
+            m_sampler.CosineWeightedSphereSampler::getDir( m_generator );
         Vector3 wi(
             smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );
         std::pair<Vector3, Scalar> result { wi, smpl.second };
         return result;
     }
     else if ( distrib < dIntensity + sIntensity ) { // specular part
-        std::pair<Vector3, Scalar> smpl = m_sampler.getDir( &generator, roughness );
+        std::pair<Vector3, Scalar> smpl = m_sampler.getDir( m_generator, roughness );
         Vector3 wi(
             smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );
         std::pair<Vector3, Scalar> result { wi, smpl.second };

@@ -1,8 +1,10 @@
 #pragma once
 
 #include <Core/Material/MaterialModel.hpp>
-#include <Core/Utils/Color.hpp>
 #include <Core/Random/CosineWeightedSphereSampler.hpp>
+#include <Core/Random/MersenneTwisterGenerator.hpp>
+#include <Core/Random/UniformGenerator.hpp>
+#include <Core/Utils/Color.hpp>
 
 namespace Ra {
 namespace Core {
@@ -13,7 +15,14 @@ class RA_CORE_API SimpleMaterialModel : public MaterialModel
 {
   protected:
     SimpleMaterialModel( const std::string& name, const std::string type ) :
-        MaterialModel( name, type ) {}
+        m_generator( new Core::Random::MersenneTwisterGenerator() ), MaterialModel( name, type ) {}
+
+    SimpleMaterialModel( const std::string& name,
+                         const std::string type,
+                         Core::Random::UniformGenerator* generator ) :
+        MaterialModel( name, type ) {
+        *m_generator = *generator;
+    }
 
   public:
     explicit SimpleMaterialModel( const std::string& name = "" ) : MaterialModel( name, "Plain" ) {}
@@ -38,13 +47,22 @@ class RA_CORE_API SimpleMaterialModel : public MaterialModel
     std::string m_texOpacity;
     bool m_hasTexDiffuse { false };
     bool m_hasTexOpacity { false };
+
+    Core::Random::UniformGenerator* m_generator;
 };
 
 class RA_CORE_API LambertianMaterialModel : public SimpleMaterialModel
 {
   public:
-    explicit LambertianMaterialModel( const std::string& name = "" ) : m_sampler(Core::Random::CosineWeightedSphereSampler()),
+    explicit LambertianMaterialModel( const std::string& name = "" ) :
+        m_sampler( Core::Random::CosineWeightedSphereSampler() ),
         SimpleMaterialModel( name, "Lambertian" ) {}
+
+    explicit LambertianMaterialModel( Core::Random::UniformGenerator* generator,
+                                      const std::string& name = "" ) :
+        m_sampler( Core::Random::CosineWeightedSphereSampler() ),
+        SimpleMaterialModel( name, "Lambertian", generator ) {}
+
     ~LambertianMaterialModel() override = default;
 
     /// DEBUG
