@@ -1,5 +1,4 @@
 #include <Core/Material/BlinnPhongMaterialModel.hpp>
-#include <Core/Math/LinearAlgebra.hpp>
 #include <Core/Utils/Log.hpp>
 
 #include <algorithm>

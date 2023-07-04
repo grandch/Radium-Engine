@@ -1,5 +1,4 @@
 #include <Core/Material/SimpleMaterialModel.hpp>
-#include <Core/Math/LinearAlgebra.hpp>
 
 #include <Core/Utils/Log.hpp>
 
