@@ -15,14 +15,14 @@ class RA_CORE_API SphereSampler
     ~SphereSampler() {};
 
     static std::pair<Vector2, Scalar> getPoint( UniformGenerator* generator ) {
-        T::getPointImplem( generator );
+        return T::getPointImplem( generator );
     }
     static std::pair<Vector3, Scalar> getDir( UniformGenerator* generator ) {
-        T::getDirImplem( generator );
+        return T::getDirImplem( generator );
     }
 
-    static Scalar pdf( Vector3 dir, Vector3 normal ) { T::pdfImplem( dir, normal ); }
-    static Scalar pdf( Vector2 point ) { T::pdfImplem( point ); }
+    static Scalar pdf( Vector3 dir, Vector3 normal ) { return T::pdfImplem( dir, normal ); }
+    static Scalar pdf( Vector2 point ) { return T::pdfImplem( point ); }
 };
 
 } // namespace Random
