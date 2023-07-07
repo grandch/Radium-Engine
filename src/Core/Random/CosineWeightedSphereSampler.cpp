@@ -17,8 +17,8 @@ Ra::Core::Random::CosineWeightedSphereSampler::getDirImplem( UniformGenerator* g
     Vector3 dir;
     Vector2 u = generator->get2D();
 
-    Scalar cosTheta = std::sqrt( u[0] );
-    Scalar sinTheta = std::sqrt( 1 - u[0] );
+    Scalar cosTheta = std::cos( std::sqrt( u[0] ) );
+    Scalar sinTheta = std::cos( Math::Pi / 2_ra - std::sqrt( u[0] ) );
     Scalar phi      = 2 * Math::Pi * u[1];
 
     dir[0] = sinTheta * std::cos( phi );

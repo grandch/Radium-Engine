@@ -17,8 +17,8 @@ Ra::Core::Random::UniformSphereSampler::getDirImplem( UniformGenerator* generato
     Vector3 dir;
     Vector2 u = generator->get2D();
 
-    Scalar cosTheta = u[0];
-    Scalar sinTheta = 1 - u[0];
+    Scalar cosTheta = std::cos( u[0] );
+    Scalar sinTheta = std::cos( Math::Pi / 2_ra - u[0] );
     Scalar phi      = 2 * Math::Pi * u[1];
 
     dir[0] = sinTheta * std::cos( phi );
