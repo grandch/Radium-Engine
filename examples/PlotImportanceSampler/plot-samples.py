@@ -3,12 +3,13 @@ import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
 import numpy as np
 import math
+import sys
 
 def plotDir(array, ax):
     for p in array:
         ax.scatter(p[0], p[1], p[2], c='#1f77b4', s=1)
 
-with open('/home/charlie/RadiumInstall/builds/radium-build-r/examples/PlotImportanceSampler/samples.json', 'r') as f:
+with open(sys.argv[1], 'r') as f:
     data = json.load(f)
 
 size = len(data)
@@ -20,6 +21,7 @@ i = 0
 for l in data:
     ax = fig.add_subplot(gs[math.floor(i/3), i%3], projection='3d')
     ax.set_title(l)
+    ax.set_zlim(0, 1)
     arr = np.array(data[l])
     plotDir(arr, ax)
     i += 1
