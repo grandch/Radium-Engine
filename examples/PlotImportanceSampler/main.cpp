@@ -14,16 +14,19 @@ int main( int /*argc*/, char** /*argv*/ ) {
 
     Random::MersenneTwisterGenerator generator = Random::MersenneTwisterGenerator();
 
-    std::vector<Vector3> uSamplesDir, cSamplesDir, bSamplesDir01, bSamplesDir05, bSamplesDir09;
+    std::vector<Vector3> uSamplesDir, cSamplesDir, bSamplesDir4, bSamplesDir16, bSamplesDir64,
+        bSamplesDir128;
     // std::vector<Vector2> uSamplesPoint, cSamplesPoint, bSamplesPoint, lbSamplesPoint,
     //     bpSamplesPoint;
 
     for ( int i = 0; i < 500; i++ ) {
         uSamplesDir.push_back( Random::UniformSphereSampler::getDir( &generator ).first );
         cSamplesDir.push_back( Random::CosineWeightedSphereSampler::getDir( &generator ).first );
-        bSamplesDir01.push_back( Random::BlinnPhongSphereSampler::getDir( &generator, 0.1 ).first );
-        bSamplesDir05.push_back( Random::BlinnPhongSphereSampler::getDir( &generator, 0.5 ).first );
-        bSamplesDir09.push_back( Random::BlinnPhongSphereSampler::getDir( &generator, 0.9 ).first );
+        bSamplesDir4.push_back( Random::BlinnPhongSphereSampler::getDir( &generator, 4 ).first );
+        bSamplesDir16.push_back( Random::BlinnPhongSphereSampler::getDir( &generator, 16 ).first );
+        bSamplesDir64.push_back( Random::BlinnPhongSphereSampler::getDir( &generator, 64 ).first );
+        bSamplesDir128.push_back(
+            Random::BlinnPhongSphereSampler::getDir( &generator, 128 ).first );
 
         // uSamplesPoint.push_back( Random::UniformSphereSampler::getPoint( &generator ).first );
         // cSamplesPoint.push_back(
@@ -34,9 +37,10 @@ int main( int /*argc*/, char** /*argv*/ ) {
 
     json j = { { "UniformSampleDir", uSamplesDir },
                { "CosineWeightedSampleDir", cSamplesDir },
-               { "BlinnPhongSampleDir r=0.1", bSamplesDir01 },
-               { "BlinnPhongSampleDir r=0.5", bSamplesDir05 },
-               { "BlinnPhongSampleDir r=0.9", bSamplesDir09 } };
+               { "BlinnPhongSampleDir 4", bSamplesDir4 },
+               { "BlinnPhongSampleDir 16", bSamplesDir16 },
+               { "BlinnPhongSampleDir 64", bSamplesDir64 },
+               { "BlinnPhongSampleDir 128", bSamplesDir128 } };
     //    { "UniformSamplePoint", uSamplesPoint },
     //    { "CosineWeightedSamplePoint", cSamplesPoint },
     //    { "BlinnPhongSamplePoint", bSamplesPoint }
