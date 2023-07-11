@@ -9,7 +9,7 @@ namespace Random {
 std::pair<Vector2, Scalar>
 Ra::Core::Random::UniformSphereSampler::getPointImplem( UniformGenerator* generator ) {
     Vector2 u = generator->get2D();
-    return { { u[0], 2 * Math::Pi * u[1] }, 1 / 2 * Math::Pi };
+    return { { u[0], 2 * Math::Pi * u[1] }, 1 / ( 2 * Math::Pi ) };
 }
 
 std::pair<Vector3, Scalar>
@@ -25,15 +25,15 @@ Ra::Core::Random::UniformSphereSampler::getDirImplem( UniformGenerator* generato
     dir[1] = sinTheta * std::sin( phi );
     dir[2] = cosTheta;
 
-    return { dir, 1 / 2 * Math::Pi };
+    return { dir, 1 / ( 2 * Math::Pi ) };
 }
 
 Scalar UniformSphereSampler::pdfImplem( Vector3 dir, Vector3 normal ) {
-    return 1 / 2 * Math::Pi;
+    return 1 / ( 2 * Math::Pi );
 }
 
 Scalar UniformSphereSampler::pdfImplem( Vector2 point ) {
-    return 1 / 2 * Math::Pi;
+    return 1 / ( 2 * Math::Pi );
 }
 
 } // namespace Random

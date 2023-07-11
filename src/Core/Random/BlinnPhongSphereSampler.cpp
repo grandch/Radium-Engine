@@ -11,7 +11,7 @@ Ra::Core::Random::BlinnPhongSphereSampler::getPoint( UniformGenerator* generator
                                                      Scalar roughness ) {
     Vector2 u = generator->get2D();
     return { { std::pow( u[0], 1_ra / ( roughness + 2 ) ), 2 * Math::Pi * u[1] },
-             ( roughness + 2 ) * std::pow( u[0], roughness ) / 2 * Math::Pi };
+             ( roughness + 2 ) * std::pow( u[0], roughness ) / ( 2 * Math::Pi ) };
 }
 
 std::pair<Vector3, Scalar>
@@ -27,16 +27,16 @@ Ra::Core::Random::BlinnPhongSphereSampler::getDir( UniformGenerator* generator, 
     dir[1] = sinTheta * std::sin( phi );
     dir[2] = cosTheta;
 
-    return { dir, ( roughness + 2 ) * std::pow( u[0], roughness ) / 2 * Math::Pi };
+    return { dir, ( roughness + 2 ) * std::pow( u[0], roughness ) / ( 2 * Math::Pi ) };
 }
 
 Scalar BlinnPhongSphereSampler::pdf( Vector3 dir, Vector3 normal, Scalar roughness ) {
     dir.normalize();
-    return ( roughness + 2 ) * std::pow( dir.dot( normal ), roughness ) / 2 * Math::Pi;
+    return ( roughness + 2 ) * std::pow( dir.dot( normal ), roughness ) / ( 2 * Math::Pi );
 }
 
 Scalar BlinnPhongSphereSampler::pdf( Vector2 point, Scalar roughness ) {
-    return ( roughness + 2 ) * std::pow( point[0], roughness ) / 2 * Math::Pi;
+    return ( roughness + 2 ) * std::pow( point[0], roughness ) / ( 2 * Math::Pi );
 }
 
 } // namespace Random
