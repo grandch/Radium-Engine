@@ -41,6 +41,8 @@ Utils::Color Material::BlinnPhongMaterialModel::evalBSDF( Vector3 w_i,
 
     // Combine the diffuse and specular components
     Utils::Color bsdf = diffuse + specular;
+
+    return bsdf;
 }
 
 std::optional<std::pair<Vector3, Scalar>> BlinnPhongMaterialModel::sample( Vector3 inDir,
