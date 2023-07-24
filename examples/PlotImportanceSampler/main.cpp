@@ -1,3 +1,4 @@
+#include <Core/Material/BlinnPhongMaterialModel.hpp>
 #include <Core/Random/BlinnPhongSphereSampler.hpp>
 #include <Core/Random/CosineWeightedSphereSampler.hpp>
 #include <Core/Random/MersenneTwisterGenerator.hpp>
@@ -15,32 +16,44 @@ int main( int /*argc*/, char** /*argv*/ ) {
     Random::MersenneTwisterGenerator generator = Random::MersenneTwisterGenerator();
 
     std::vector<Vector3> uSamplesDir, cSamplesDir, bSamplesDir4, bSamplesDir16, bSamplesDir64,
-        bSamplesDir128;
-    // std::vector<Vector2> uSamplesPoint, cSamplesPoint, bSamplesPoint, lbSamplesPoint,
-    //     bpSamplesPoint;
+        bSamplesDir128, bpmat, lambmat;
+
+    Material::BlinnPhongMaterialModel bpmaterial = Material::BlinnPhongMaterialModel();
 
     for ( int i = 0; i < 500; i++ ) {
-        uSamplesDir.push_back( Random::UniformSphereSampler::getDir( &generator ).first );
-        cSamplesDir.push_back( Random::CosineWeightedSphereSampler::getDir( &generator ).first );
-        bSamplesDir4.push_back( Random::BlinnPhongSphereSampler::getDir( &generator, 4 ).first );
-        bSamplesDir16.push_back( Random::BlinnPhongSphereSampler::getDir( &generator, 16 ).first );
-        bSamplesDir64.push_back( Random::BlinnPhongSphereSampler::getDir( &generator, 64 ).first );
-        bSamplesDir128.push_back(
-            Random::BlinnPhongSphereSampler::getDir( &generator, 128 ).first );
+        // uSamplesDir.push_back( Random::UniformSphereSampler::getDir( &generator ).first );
+        // cSamplesDir.push_back( Random::CosineWeightedSphereSampler::getDir( &generator ).first );
+        // bSamplesDir4.push_back( Random::BlinnPhongSphereSampler::getDir( &generator, 4 ).first );
+        // bSamplesDir16.push_back( Random::BlinnPhongSphereSampler::getDir( &generator, 16 ).first
+        // ); bSamplesDir64.push_back( Random::BlinnPhongSphereSampler::getDir( &generator, 64
+        // ).first ); bSamplesDir128.push_back(
+        //     Random::BlinnPhongSphereSampler::getDir( &generator, 128 ).first );
 
-        // uSamplesPoint.push_back( Random::UniformSphereSampler::getPoint( &generator ).first );
-        // cSamplesPoint.push_back(
-        //     Random::CosineWeightedSphereSampler::getPoint( &generator ).first );
-        // bSamplesPoint.push_back( Random::BlinnPhongSphereSampler::getPoint( &generator, 0.7
-        // ).first );
+        bpmaterial.m_ns = 4;
+        auto sample =
+            bpmaterial.sample( { -1, 0, 1 }, { 0, 0, 1 }, { 0, 1, 0 }, { 1, 0, 0 }, { 0, 0 } );
+        if ( sample.has_value() ) bSamplesDir4.push_back( sample.value().first );
+
+        bpmaterial.m_ns = 16;
+        sample = bpmaterial.sample( { -1, 0, 1 }, { 0, 0, 1 }, { 0, 1, 0 }, { 1, 0, 0 }, { 0, 0 } );
+        if ( sample.has_value() ) bSamplesDir16.push_back( sample.value().first );
+
+        bpmaterial.m_ns = 64;
+        sample = bpmaterial.sample( { -1, 0, 1 }, { 0, 0, 1 }, { 0, 1, 0 }, { 1, 0, 0 }, { 0, 0 } );
+        if ( sample.has_value() ) bSamplesDir64.push_back( sample.value().first );
+
+        bpmaterial.m_ns = 128;
+        sample = bpmaterial.sample( { -1, 0, 1 }, { 0, 0, 1 }, { 0, 1, 0 }, { 1, 0, 0 }, { 0, 0 } );
+        if ( sample.has_value() ) bSamplesDir128.push_back( sample.value().first );
     }
 
-    json j = { { "UniformSampleDir", uSamplesDir },
-               { "CosineWeightedSampleDir", cSamplesDir },
+    json j = { //{ "UniformSampleDir", uSamplesDir },
+               //{ "CosineWeightedSampleDir", cSamplesDir },
                { "BlinnPhongSampleDir 4", bSamplesDir4 },
                { "BlinnPhongSampleDir 16", bSamplesDir16 },
                { "BlinnPhongSampleDir 64", bSamplesDir64 },
                { "BlinnPhongSampleDir 128", bSamplesDir128 } };
+    //    {"BlinnPhongMaterial", bpmat}};
     //    { "UniformSamplePoint", uSamplesPoint },
     //    { "CosineWeightedSamplePoint", cSamplesPoint },
     //    { "BlinnPhongSamplePoint", bSamplesPoint }
