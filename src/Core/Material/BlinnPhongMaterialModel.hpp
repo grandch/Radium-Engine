@@ -40,8 +40,6 @@ class RA_CORE_API BlinnPhongMaterialModel : public SimpleMaterialModel
     sample( Vector3 inDir, Vector3 normal, Vector3 tangent, Vector3 bitangent, Vector2 u ) override;
     Scalar PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) override;
 
-    Scalar getRoughness();
-
     /// DATA MEMBERS
     Core::Utils::Color m_kd { 0.7_ra, 0.7_ra, 0.7_ra };
     Core::Utils::Color m_ks { 0.3_ra, 0.3_ra, 0.3_ra };

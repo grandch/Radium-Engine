@@ -100,13 +100,6 @@ Scalar BlinnPhongMaterialModel::PDF( Vector3 inDir, Vector3 outDir, Vector3 norm
         1_ra );
 }
 
-Scalar BlinnPhongMaterialModel::getRoughness() {
-    Scalar ns = m_ns;
-    if ( ns > 1 ) { ns /= 128_ra; }
-    Scalar r = std::clamp( 1 - ns, 0.04_ra, 0.96_ra );
-    return 1 - m_ns;
-}
-
 } // namespace Material
 } // namespace Core
 } // namespace Ra
