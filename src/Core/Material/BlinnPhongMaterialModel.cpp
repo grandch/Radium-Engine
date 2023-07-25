@@ -52,12 +52,12 @@ std::optional<std::pair<Vector3, Scalar>> BlinnPhongMaterialModel::sample( Vecto
                                                                            Vector2 u ) {
     Vector3 halfway;
 
-    Scalar distrib = m_generator->get1D();
+    Scalar distrib = m_generator.get()->get1D();
 
     // diffuse part
     if ( distrib < m_diffuseLuminance ) {
         std::pair<Vector3, Scalar> smpl =
-            Core::Random::CosineWeightedSphereSampler::getDir( m_generator );
+            Core::Random::CosineWeightedSphereSampler::getDir( m_generator.get() );
         Vector3 wi(
             smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );
         std::pair<Vector3, Scalar> result { wi, smpl.second };
@@ -65,7 +65,7 @@ std::optional<std::pair<Vector3, Scalar>> BlinnPhongMaterialModel::sample( Vecto
     }
     else if ( distrib < m_diffuseLuminance + m_specularLuminance ) { // specular part
         std::pair<Vector3, Scalar> smpl =
-            Core::Random::BlinnPhongSphereSampler::getDir( m_generator, m_ns );
+            Core::Random::BlinnPhongSphereSampler::getDir( m_generator.get(), m_ns );
         Vector3 wi(
             smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );
         std::pair<Vector3, Scalar> result { wi, smpl.second };

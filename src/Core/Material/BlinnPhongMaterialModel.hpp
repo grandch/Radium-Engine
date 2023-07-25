@@ -15,11 +15,10 @@ namespace Material {
 class RA_CORE_API BlinnPhongMaterialModel : public SimpleMaterialModel
 {
   public:
-    explicit BlinnPhongMaterialModel( const std::string& name = "" ) :
-        SimpleMaterialModel( name, "BlinnPhong" ) {}
-
-    explicit BlinnPhongMaterialModel( const std::string& name = "",
-                                      std::shared_ptr<Core::Random::UniformGenerator> generator ) :
+    explicit BlinnPhongMaterialModel(
+        const std::string& name = "",
+        std::shared_ptr<Core::Random::UniformGenerator> generator =
+            std::make_shared<Core::Random::MersenneTwisterGenerator>() ) :
         SimpleMaterialModel( name, "BlinnPhong", generator ) {}
 
     ~BlinnPhongMaterialModel() override = default;
