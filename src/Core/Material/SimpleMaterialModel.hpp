@@ -40,7 +40,29 @@ class RA_CORE_API SimpleMaterialModel : public MaterialModel
     sample( Vector3 inDir, Vector3 normal, Vector3 tangent, Vector3 bitangent, Vector2 u ) override;
     Scalar PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) override;
 
-    /// DATA MEMBERS
+    inline Utils::Color getDiffuseColor() const { return m_kd; }
+    inline Scalar getAlpha() const { return m_alpha; }
+    inline std::string getTexDiffuse() const { return m_texDiffuse; }
+    inline std::string getTexOpacity() const { return m_texOpacity; }
+
+    inline void setDiffuseColor( Utils::Color color ) {
+        m_kd    = color;
+        m_alpha = color.alpha();
+    }
+    inline void setAlpha( Scalar alpha ) {
+        m_alpha = alpha;
+        m_kd[3] = alpha;
+    }
+    inline void setTexDiffuse( std::string texDiffuse ) {
+        m_texDiffuse    = texDiffuse;
+        m_hasTexDiffuse = true;
+    }
+    inline void setTexOpacity( std::string texOpacity ) {
+        m_texOpacity    = texOpacity;
+        m_hasTexOpacity = true;
+    }
+
+  protected:
     Core::Utils::Color m_kd { 0.9_ra, 0.9_ra, 0.9_ra };
     Scalar m_alpha { 1_ra };
     std::string m_texDiffuse;
@@ -74,7 +96,13 @@ class RA_CORE_API LambertianMaterialModel : public SimpleMaterialModel
     sample( Vector3 inDir, Vector3 normal, Vector3 tangent, Vector3 bitangent, Vector2 u ) override;
     Scalar PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) override;
 
-    /// DATA MEMBERS
+    inline std::string getTexNormal() const { return m_texNormal; }
+    inline void setTexNormal( std::string texNormal ) {
+        m_texNormal    = texNormal;
+        m_hasTexNormal = true;
+    }
+
+  private:
     std::string m_texNormal;
     bool m_hasTexNormal { false };
 };

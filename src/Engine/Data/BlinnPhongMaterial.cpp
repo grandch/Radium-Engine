@@ -154,23 +154,25 @@ BlinnPhongMaterialConverter::operator()( const Ra::Core::Material::MaterialModel
     // static cst is safe here
     auto source = static_cast<const Ra::Core::Material::BlinnPhongMaterialModel*>( toconvert );
 
-    result->m_kd    = source->m_kd;
-    result->m_ks    = source->m_ks;
-    result->m_ns    = source->m_ns;
-    result->m_alpha = source->m_alpha;
+    result->m_kd    = source->getDiffuseColor();
+    result->m_ks    = source->getSpecularColor();
+    result->m_ns    = source->getShininess();
+    result->m_alpha = source->getAlpha();
     if ( source->hasDiffuseTexture() )
         result->addTexture( BlinnPhongMaterial::TextureSemantic::TEX_DIFFUSE,
-                            source->m_texDiffuse );
+                            source->getTexDiffuse() );
     if ( source->hasSpecularTexture() )
         result->addTexture( BlinnPhongMaterial::TextureSemantic::TEX_SPECULAR,
-                            source->m_texSpecular );
+                            source->getTexSpecular() );
     if ( source->hasShininessTexture() )
         result->addTexture( BlinnPhongMaterial::TextureSemantic::TEX_SHININESS,
-                            source->m_texShininess );
+                            source->getTexShininess() );
     if ( source->hasOpacityTexture() )
-        result->addTexture( BlinnPhongMaterial::TextureSemantic::TEX_ALPHA, source->m_texOpacity );
+        result->addTexture( BlinnPhongMaterial::TextureSemantic::TEX_ALPHA,
+                            source->getTexOpacity() );
     if ( source->hasNormalTexture() )
-        result->addTexture( BlinnPhongMaterial::TextureSemantic::TEX_NORMAL, source->m_texNormal );
+        result->addTexture( BlinnPhongMaterial::TextureSemantic::TEX_NORMAL,
+                            source->getTexNormal() );
 
     return result;
 }
