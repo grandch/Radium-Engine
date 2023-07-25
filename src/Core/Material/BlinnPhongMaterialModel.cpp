@@ -52,18 +52,10 @@ std::optional<std::pair<Vector3, Scalar>> BlinnPhongMaterialModel::sample( Vecto
                                                                            Vector2 u ) {
     Vector3 halfway;
 
-    Vector3 rgbToLuminance { 0.2126_ra, 0.7152_ra, 0.0722_ra };
-    Scalar dIntensity   = m_kd.rgb().dot( rgbToLuminance );
-    Scalar sIntensity   = m_ks.rgb().dot( rgbToLuminance );
-    Scalar diffSpecNorm = std::max( 1_ra, dIntensity + sIntensity );
-
-    dIntensity /= diffSpecNorm;
-    sIntensity /= diffSpecNorm;
-
     Scalar distrib = m_generator->get1D();
 
     // diffuse part
-    if ( distrib < dIntensity ) {
+    if ( distrib < m_diffuseLuminance ) {
         std::pair<Vector3, Scalar> smpl =
             Core::Random::CosineWeightedSphereSampler::getDir( m_generator );
         Vector3 wi(
@@ -71,7 +63,7 @@ std::optional<std::pair<Vector3, Scalar>> BlinnPhongMaterialModel::sample( Vecto
         std::pair<Vector3, Scalar> result { wi, smpl.second };
         return result;
     }
-    else if ( distrib < dIntensity + sIntensity ) { // specular part
+    else if ( distrib < m_diffuseLuminance + m_specularLuminance ) { // specular part
         std::pair<Vector3, Scalar> smpl =
             Core::Random::BlinnPhongSphereSampler::getDir( m_generator, m_ns );
         Vector3 wi(
@@ -85,19 +77,12 @@ std::optional<std::pair<Vector3, Scalar>> BlinnPhongMaterialModel::sample( Vecto
 }
 
 Scalar BlinnPhongMaterialModel::PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) {
-    Vector3 rgbToLuminance { 0.2126_ra, 0.7152_ra, 0.0722_ra };
-    Scalar dIntensity   = m_kd.rgb().dot( rgbToLuminance );
-    Scalar sIntensity   = m_ks.rgb().dot( rgbToLuminance );
-    Scalar diffSpecNorm = std::max( 1_ra, dIntensity + sIntensity );
-
-    dIntensity /= diffSpecNorm;
-    sIntensity /= diffSpecNorm;
-
-    return std::clamp(
-        dIntensity * Core::Random::CosineWeightedSphereSampler::pdf( outDir, normal ) +
-            sIntensity * Core::Random::BlinnPhongSphereSampler::pdf( outDir, normal, m_ns ),
-        0_ra,
-        1_ra );
+    return std::clamp( m_diffuseLuminance *
+                               Core::Random::CosineWeightedSphereSampler::pdf( outDir, normal ) +
+                           m_specularLuminance *
+                               Core::Random::BlinnPhongSphereSampler::pdf( outDir, normal, m_ns ),
+                       0_ra,
+                       1_ra );
 }
 
 } // namespace Material

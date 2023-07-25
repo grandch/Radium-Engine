@@ -40,9 +40,56 @@ class RA_CORE_API BlinnPhongMaterialModel : public SimpleMaterialModel
     sample( Vector3 inDir, Vector3 normal, Vector3 tangent, Vector3 bitangent, Vector2 u ) override;
     Scalar PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) override;
 
-    /// DATA MEMBERS
+    inline Utils::Color getSpecularColor() const { return m_ks; }
+    inline Scalar getShininess() const { return m_ns; }
+    inline Scalar getDiffuseLuminance() const { return m_diffuseLuminance; }
+    inline Scalar getSpecularLuminance() const { return m_specularLuminance; }
+    inline std::string getTexSpecular() const { return m_texSpecular; }
+    inline std::string getTexShininess() const { return m_texShininess; }
+    inline std::string getTexNormal() const { return m_texNormal; }
+
+    inline void setDiffuseColor( Utils::Color color ) {
+        m_kd = color;
+        Vector3 rgbToLuminance { 0.2126_ra, 0.7152_ra, 0.0722_ra };
+        Scalar dIntensity   = m_kd.rgb().dot( rgbToLuminance );
+        Scalar sIntensity   = m_ks.rgb().dot( rgbToLuminance );
+        Scalar diffSpecNorm = std::max( 1_ra, dIntensity + sIntensity );
+
+        m_diffuseLuminance /= diffSpecNorm;
+        m_specularLuminance /= diffSpecNorm;
+        m_alpha = color.alpha();
+    }
+
+    inline void setSpecularColor( Utils::Color color ) {
+        m_ks = color;
+        Vector3 rgbToLuminance { 0.2126_ra, 0.7152_ra, 0.0722_ra };
+        Scalar dIntensity   = m_kd.rgb().dot( rgbToLuminance );
+        Scalar sIntensity   = m_ks.rgb().dot( rgbToLuminance );
+        Scalar diffSpecNorm = std::max( 1_ra, dIntensity + sIntensity );
+
+        m_diffuseLuminance /= diffSpecNorm;
+        m_specularLuminance /= diffSpecNorm;
+    }
+
+    inline void setShininess( Scalar specular ) { m_ns = specular; }
+    inline void setTexSpecular( std::string texSpecular ) {
+        m_texSpecular    = texSpecular;
+        m_hasTexSpecular = true;
+    }
+    inline void setTexShininess( std::string texShininess ) {
+        m_texShininess    = texShininess;
+        m_hasTexShininess = true;
+    }
+    inline void setTexNormal( std::string texNormal ) {
+        m_texNormal    = texNormal;
+        m_hasTexNormal = true;
+    }
+
+  private:
     Core::Utils::Color m_ks { 0.3_ra, 0.3_ra, 0.3_ra };
     Scalar m_ns { 64_ra };
+    Scalar m_diffuseLuminance;
+    Scalar m_specularLuminance;
     std::string m_texSpecular;
     std::string m_texShininess;
     std::string m_texNormal;
