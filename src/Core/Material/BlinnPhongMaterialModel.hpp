@@ -41,7 +41,6 @@ class RA_CORE_API BlinnPhongMaterialModel : public SimpleMaterialModel
     Scalar PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) override;
 
     /// DATA MEMBERS
-    Core::Utils::Color m_kd { 0.7_ra, 0.7_ra, 0.7_ra };
     Core::Utils::Color m_ks { 0.3_ra, 0.3_ra, 0.3_ra };
     Scalar m_ns { 64_ra };
     std::string m_texSpecular;
