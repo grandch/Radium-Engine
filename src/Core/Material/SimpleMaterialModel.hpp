@@ -14,15 +14,11 @@ namespace Material {
 class RA_CORE_API SimpleMaterialModel : public MaterialModel
 {
   protected:
-    SimpleMaterialModel( const std::string& name, const std::string type ) :
-        m_generator( new Core::Random::MersenneTwisterGenerator() ), MaterialModel( name, type ) {}
-
     SimpleMaterialModel( const std::string& name,
                          const std::string type,
-                         Core::Random::UniformGenerator* generator ) :
-        MaterialModel( name, type ) {
-        *m_generator = *generator;
-    }
+                         std::shared_ptr<Core::Random::UniformGenerator> generator =
+                             std::make_shared<Core::Random::UniformGenerator>() ) :
+        MaterialModel( name, type ), m_generator = std::move( generator ) {}
 
   public:
     explicit SimpleMaterialModel( const std::string& name = "" ) : MaterialModel( name, "Plain" ) {}
@@ -70,7 +66,7 @@ class RA_CORE_API SimpleMaterialModel : public MaterialModel
     bool m_hasTexDiffuse { false };
     bool m_hasTexOpacity { false };
 
-    Core::Random::UniformGenerator* m_generator;
+    std::shared_ptr<Core::Random::UniformGenerator> m_generator;
 };
 
 class RA_CORE_API LambertianMaterialModel : public SimpleMaterialModel
@@ -79,8 +75,8 @@ class RA_CORE_API LambertianMaterialModel : public SimpleMaterialModel
     explicit LambertianMaterialModel( const std::string& name = "" ) :
         SimpleMaterialModel( name, "Lambertian" ) {}
 
-    explicit LambertianMaterialModel( Core::Random::UniformGenerator* generator,
-                                      const std::string& name = "" ) :
+    explicit LambertianMaterialModel( const std::string& name = "",
+                                      std::shared_ptr<Core::Random::UniformGenerator> generator ) :
         SimpleMaterialModel( name, "Lambertian", generator ) {}
 
     ~LambertianMaterialModel() override = default;

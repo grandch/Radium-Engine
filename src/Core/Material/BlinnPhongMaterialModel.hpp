@@ -18,8 +18,8 @@ class RA_CORE_API BlinnPhongMaterialModel : public SimpleMaterialModel
     explicit BlinnPhongMaterialModel( const std::string& name = "" ) :
         SimpleMaterialModel( name, "BlinnPhong" ) {}
 
-    explicit BlinnPhongMaterialModel( Core::Random::UniformGenerator* generator,
-                                      const std::string& name = "" ) :
+    explicit BlinnPhongMaterialModel( const std::string& name = "",
+                                      std::shared_ptr<Core::Random::UniformGenerator> generator ) :
         SimpleMaterialModel( name, "BlinnPhong", generator ) {}
 
     ~BlinnPhongMaterialModel() override = default;
