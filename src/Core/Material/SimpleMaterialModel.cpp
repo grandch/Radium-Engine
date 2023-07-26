@@ -26,10 +26,10 @@ SimpleMaterialModel::operator()( Vector3 w_i, Vector3 w_o, Vector3 normal, Vecto
     return m_kd;
 }
 std::optional<std::pair<Vector3, Scalar>>
-SimpleMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector3 tangent, Vector3 bitangent ) {
+SimpleMaterialModel::sample( Vector3 w_i, Vector3 normal, Vector3 tangent, Vector3 bitangent ) {
     return {};
 }
-Scalar SimpleMaterialModel::pdf( Vector3 inDir, Vector3 outDir, Vector3 normal ) {
+Scalar SimpleMaterialModel::pdf( Vector3 w_i, Vector3 w_o, Vector3 normal ) {
     return 0_ra;
 }
 
@@ -58,23 +58,21 @@ Utils::Color Material::LambertianMaterialModel::operator()( Vector3 w_i,
     return m_kd / M_PI;
 }
 
-std::optional<std::pair<Vector3, Scalar>> LambertianMaterialModel::sample( Vector3 inDir,
-                                                                           Vector3 normal,
-                                                                           Vector3 tangent,
-                                                                           Vector3 bitangent ) {
+std::optional<std::pair<Vector3, Scalar>>
+LambertianMaterialModel::sample( Vector3 w_i, Vector3 normal, Vector3 tangent, Vector3 bitangent ) {
     // sample point on hemisphere with cosine-weighted distribution
     std::pair<Vector3, Scalar> smpl =
         Core::Random::CosineWeightedSphereSampler::getDir( m_generator.get() );
 
     // transform sampled point from local to world coodinate system
-    Vector3 wi( smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );
-    std::pair<Vector3, Scalar> result { wi, smpl.second };
+    Vector3 w_o( smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );
+    std::pair<Vector3, Scalar> result { w_o, smpl.second };
 
     return result;
 }
 
-Scalar LambertianMaterialModel::pdf( Vector3 inDir, Vector3 outDir, Vector3 normal ) {
-    return Core::Random::CosineWeightedSphereSampler::pdf( outDir, normal );
+Scalar LambertianMaterialModel::pdf( Vector3 w_i, Vector3 w_o, Vector3 normal ) {
+    return Core::Random::CosineWeightedSphereSampler::pdf( w_o, normal );
 }
 
 } // namespace Material

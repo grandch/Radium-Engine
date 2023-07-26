@@ -11,6 +11,9 @@ namespace Core {
 namespace Material {
 
 // RADIUM SUPPORTED MATERIALS
+
+/// @brief Implementation of MaterialModel. This material doesn't compute lighting and only display
+/// one color.
 class RA_CORE_API SimpleMaterialModel : public MaterialModel
 {
   protected:
@@ -33,7 +36,7 @@ class RA_CORE_API SimpleMaterialModel : public MaterialModel
 
     Utils::Color operator()( Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv ) override;
     std::optional<std::pair<Vector3, Scalar>>
-    sample( Vector3 inDir, Vector3 normal, Vector3 tangent, Vector3 bitangent ) override;
+    sample( Vector3 w_i, Vector3 normal, Vector3 tangent, Vector3 bitangent ) override;
     Scalar pdf( Vector3 inDir, Vector3 outDir, Vector3 normal ) override;
 
     inline Utils::Color getDiffuseColor() const { return m_kd; }
@@ -69,6 +72,7 @@ class RA_CORE_API SimpleMaterialModel : public MaterialModel
     std::shared_ptr<Core::Random::UniformGenerator> m_generator;
 };
 
+/// @brief Implementation of MaterialModel according to Lambertian reflectance model.
 class RA_CORE_API LambertianMaterialModel : public SimpleMaterialModel
 {
   public:
@@ -88,8 +92,8 @@ class RA_CORE_API LambertianMaterialModel : public SimpleMaterialModel
 
     Utils::Color operator()( Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv ) override;
     std::optional<std::pair<Vector3, Scalar>>
-    sample( Vector3 inDir, Vector3 normal, Vector3 tangent, Vector3 bitangent ) override;
-    Scalar pdf( Vector3 inDir, Vector3 outDir, Vector3 normal ) override;
+    sample( Vector3 w_i, Vector3 normal, Vector3 tangent, Vector3 bitangent ) override;
+    Scalar pdf( Vector3 w_i, Vector3 w_o, Vector3 normal ) override;
 
     inline std::string getTexNormal() const { return m_texNormal; }
     inline void setTexNormal( std::string texNormal ) {

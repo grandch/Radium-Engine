@@ -8,13 +8,17 @@ namespace Ra {
 namespace Core {
 namespace Random {
 
-class RA_CORE_API MersenneTwisterGenerator : public UniformGenerator {
+/// @brief Implementation of the UniformGenerator class using the std Mersenne Twister Generator
+/// (std::mt19937).
+class RA_CORE_API MersenneTwisterGenerator : public UniformGenerator
+{
   public:
     MersenneTwisterGenerator();
     ~MersenneTwisterGenerator();
 
     Scalar get1D() override;
 
+  private:
     std::mt19937 m_randomEngine;
 };
 

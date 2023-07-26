@@ -46,10 +46,8 @@ Utils::Color Material::BlinnPhongMaterialModel::operator()( Vector3 w_i,
     return bsdf;
 }
 
-std::optional<std::pair<Vector3, Scalar>> BlinnPhongMaterialModel::sample( Vector3 inDir,
-                                                                           Vector3 normal,
-                                                                           Vector3 tangent,
-                                                                           Vector3 bitangent ) {
+std::optional<std::pair<Vector3, Scalar>>
+BlinnPhongMaterialModel::sample( Vector3 w_i, Vector3 normal, Vector3 tangent, Vector3 bitangent ) {
     Vector3 halfway;
 
     Scalar distrib = m_generator.get()->get1D();
@@ -67,19 +65,19 @@ std::optional<std::pair<Vector3, Scalar>> BlinnPhongMaterialModel::sample( Vecto
     // specular part
     else if ( distrib < m_diffuseLuminance + m_specularLuminance ) {
         // compute incoming direction in canonical frame
-        Vector3 inDirLocal = inDir.dot( normal ) * normal + inDir.dot( tangent ) * tangent +
-                             inDir.dot( bitangent ) * bitangent;
+        Vector3 w_iLocal = w_i.dot( normal ) * normal + w_i.dot( tangent ) * tangent +
+                           w_i.dot( bitangent ) * bitangent;
         std::pair<Vector3, Scalar> smpl =
             Core::Random::BlinnPhongSphereSampler::getDir( m_generator.get(), m_ns );
 
         // compute reflection in canonical frame using sample as microfacet normal
         Vector3 localReflection =
-            Core::Random::BlinnPhongSphereSampler::reflect( inDirLocal, smpl.first );
+            Core::Random::BlinnPhongSphereSampler::reflect( w_iLocal, smpl.first );
         // compute outgoing direction in world frame using normal, tangent and bitangent vectors
-        Vector3 wo( localReflection.dot( tangent ),
-                    localReflection.dot( bitangent ),
-                    localReflection.dot( normal ) );
-        std::pair<Vector3, Scalar> result { wo, smpl.second };
+        Vector3 w_o( localReflection.dot( tangent ),
+                     localReflection.dot( bitangent ),
+                     localReflection.dot( normal ) );
+        std::pair<Vector3, Scalar> result { w_o, smpl.second };
 
         return result;
     }
@@ -88,13 +86,12 @@ std::optional<std::pair<Vector3, Scalar>> BlinnPhongMaterialModel::sample( Vecto
     }
 }
 
-Scalar BlinnPhongMaterialModel::pdf( Vector3 inDir, Vector3 outDir, Vector3 normal ) {
-    return std::clamp( m_diffuseLuminance *
-                               Core::Random::CosineWeightedSphereSampler::pdf( outDir, normal ) +
-                           m_specularLuminance *
-                               Core::Random::BlinnPhongSphereSampler::pdf( outDir, normal, m_ns ),
-                       0_ra,
-                       1_ra );
+Scalar BlinnPhongMaterialModel::pdf( Vector3 w_i, Vector3 w_o, Vector3 normal ) {
+    return std::clamp(
+        m_diffuseLuminance * Core::Random::CosineWeightedSphereSampler::pdf( w_o, normal ) +
+            m_specularLuminance * Core::Random::BlinnPhongSphereSampler::pdf( w_o, normal, m_ns ),
+        0_ra,
+        1_ra );
 }
 
 void BlinnPhongMaterialModel::computeLuminance() {
