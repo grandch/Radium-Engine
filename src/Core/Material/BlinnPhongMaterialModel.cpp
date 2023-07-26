@@ -59,17 +59,29 @@ std::optional<std::pair<Vector3, Scalar>> BlinnPhongMaterialModel::sample( Vecto
     if ( distrib < m_diffuseLuminance ) {
         std::pair<Vector3, Scalar> smpl =
             Core::Random::CosineWeightedSphereSampler::getDir( m_generator.get() );
-        Vector3 wi(
+        Vector3 wo(
             smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );
-        std::pair<Vector3, Scalar> result { wi, smpl.second };
+        std::pair<Vector3, Scalar> result { wo, smpl.second };
+
         return result;
     }
-    else if ( distrib < m_diffuseLuminance + m_specularLuminance ) { // specular part
+    // specular part
+    else if ( distrib < m_diffuseLuminance + m_specularLuminance ) {
+        // compute incoming direction in canonical frame
+        Vector3 inDirLocal = inDir.dot( normal ) * normal + inDir.dot( tangent ) * tangent +
+                             inDir.dot( bitangent ) * bitangent;
         std::pair<Vector3, Scalar> smpl =
             Core::Random::BlinnPhongSphereSampler::getDir( m_generator.get(), m_ns );
-        Vector3 wi(
-            smpl.first.dot( tangent ), smpl.first.dot( bitangent ), smpl.first.dot( normal ) );
-        std::pair<Vector3, Scalar> result { wi, smpl.second };
+
+        // compute reflection in canonical frame using sample as microfacet normal
+        Vector3 localReflection =
+            Core::Random::BlinnPhongSphereSampler::reflect( inDirLocal, smpl.first );
+        // compute outgoing direction in world frame using normal, tangent and bitangent vectors
+        Vector3 wo( localReflection.dot( tangent ),
+                    localReflection.dot( bitangent ),
+                    localReflection.dot( normal ) );
+        std::pair<Vector3, Scalar> result { wo, smpl.second };
+
         return result;
     }
     else { // no next dir

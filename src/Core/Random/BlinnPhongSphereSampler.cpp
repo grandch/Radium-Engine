@@ -27,6 +27,10 @@ Scalar BlinnPhongSphereSampler::pdf( Vector3 dir, Vector3 normal, Scalar roughne
     return ( roughness + 2 ) * std::pow( dir.dot( normal ), roughness ) / ( 2 * Math::Pi );
 }
 
+Vector3 BlinnPhongSphereSampler::reflect( Vector3 inDir, Vector3 normal ) {
+    return -inDir + 2 * inDir.dot( normal ) * normal;
+}
+
 } // namespace Random
 } // namespace Core
 } // namespace Ra
