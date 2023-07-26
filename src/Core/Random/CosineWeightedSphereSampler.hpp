@@ -12,11 +12,9 @@ class RA_CORE_API CosineWeightedSphereSampler : public SphereSampler<CosineWeigh
     CosineWeightedSphereSampler() {};
     ~CosineWeightedSphereSampler() {};
 
-    static std::pair<Vector2, Scalar> getPointImplem( UniformGenerator* generator );
     static std::pair<Vector3, Scalar> getDirImplem( UniformGenerator* generator );
 
     static Scalar pdfImplem( Vector3 dir, Vector3 normal );
-    static Scalar pdfImplem( Vector2 point );
 };
 
 } // namespace Random

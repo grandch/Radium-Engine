@@ -6,12 +6,6 @@ namespace Ra {
 namespace Core {
 namespace Random {
 
-std::pair<Vector2, Scalar>
-Ra::Core::Random::CosineWeightedSphereSampler::getPointImplem( UniformGenerator* generator ) {
-    Vector2 u = generator->get2D();
-    return { { std::sqrt( u[0] ), 2 * Math::Pi * u[1] }, u[0] / Math::Pi };
-}
-
 std::pair<Vector3, Scalar>
 Ra::Core::Random::CosineWeightedSphereSampler::getDirImplem( UniformGenerator* generator ) {
     Vector3 dir;
@@ -31,10 +25,6 @@ Ra::Core::Random::CosineWeightedSphereSampler::getDirImplem( UniformGenerator* g
 Scalar CosineWeightedSphereSampler::pdfImplem( Vector3 dir, Vector3 normal ) {
     dir.normalize();
     return dir.dot( normal ) / Math::Pi;
-}
-
-Scalar CosineWeightedSphereSampler::pdfImplem( Vector2 point ) {
-    return point[0] / Math::Pi;
 }
 
 } // namespace Random

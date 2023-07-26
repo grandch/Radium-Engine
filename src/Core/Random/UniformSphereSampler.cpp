@@ -6,12 +6,6 @@ namespace Ra {
 namespace Core {
 namespace Random {
 
-std::pair<Vector2, Scalar>
-Ra::Core::Random::UniformSphereSampler::getPointImplem( UniformGenerator* generator ) {
-    Vector2 u = generator->get2D();
-    return { { u[0], 2 * Math::Pi * u[1] }, 1 / ( 2 * Math::Pi ) };
-}
-
 std::pair<Vector3, Scalar>
 Ra::Core::Random::UniformSphereSampler::getDirImplem( UniformGenerator* generator ) {
     Vector3 dir;
@@ -29,10 +23,6 @@ Ra::Core::Random::UniformSphereSampler::getDirImplem( UniformGenerator* generato
 }
 
 Scalar UniformSphereSampler::pdfImplem( Vector3 dir, Vector3 normal ) {
-    return 1 / ( 2 * Math::Pi );
-}
-
-Scalar UniformSphereSampler::pdfImplem( Vector2 point ) {
     return 1 / ( 2 * Math::Pi );
 }
 
