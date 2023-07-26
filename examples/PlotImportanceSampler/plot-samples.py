@@ -5,6 +5,13 @@ import numpy as np
 import math
 import sys
 
+"""
+This python script is used to plot the samples writted to a json file by the main.cpp Radium example app in the PlotImportanceSampler folder.
+
+To launch this script use the command
+python3 plot-samples.py /path/to/jsonfile.json
+"""
+
 def plotDir(array, ax):
     for p in array:
         ax.scatter(p[0], p[1], p[2], c='#1f77b4', s=1)

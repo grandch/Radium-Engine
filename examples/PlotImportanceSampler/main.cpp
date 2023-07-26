@@ -1,4 +1,4 @@
-#include <Core/Material/BlinnPhongMaterialModel.hpp>
+// Include the samplers and a random generator
 #include <Core/Random/BlinnPhongSphereSampler.hpp>
 #include <Core/Random/CosineWeightedSphereSampler.hpp>
 #include <Core/Random/MersenneTwisterGenerator.hpp>
@@ -13,56 +13,39 @@ int main( int /*argc*/, char** /*argv*/ ) {
     using namespace Ra::Core;
     using json = nlohmann::json;
 
+    //! [Creating the random generator to feed the samplers]
     Random::MersenneTwisterGenerator generator = Random::MersenneTwisterGenerator();
 
+    //! [Creating the samplers]
     std::vector<Vector3> uSamplesDir, cSamplesDir, bSamplesDir4, bSamplesDir16, bSamplesDir64,
-        bSamplesDir128, bpmat, lambmat;
+        bSamplesDir128;
 
-    Material::BlinnPhongMaterialModel bpmaterial = Material::BlinnPhongMaterialModel();
-
+    //! [Sampling (here 500 times) with each sampler]
     for ( int i = 0; i < 500; i++ ) {
-        // uSamplesDir.push_back( Random::UniformSphereSampler::getDir( &generator ).first );
-        // cSamplesDir.push_back( Random::CosineWeightedSphereSampler::getDir( &generator ).first );
-        // bSamplesDir4.push_back( Random::BlinnPhongSphereSampler::getDir( &generator, 4 ).first );
-        // bSamplesDir16.push_back( Random::BlinnPhongSphereSampler::getDir( &generator, 16 ).first
-        // ); bSamplesDir64.push_back( Random::BlinnPhongSphereSampler::getDir( &generator, 64
-        // ).first ); bSamplesDir128.push_back(
-        //     Random::BlinnPhongSphereSampler::getDir( &generator, 128 ).first );
-
-        bpmaterial.m_ns = 4;
-        auto sample =
-            bpmaterial.sample( { -1, 0, 1 }, { 0, 0, 1 }, { 0, 1, 0 }, { 1, 0, 0 }, { 0, 0 } );
-        if ( sample.has_value() ) bSamplesDir4.push_back( sample.value().first );
-
-        bpmaterial.m_ns = 16;
-        sample = bpmaterial.sample( { -1, 0, 1 }, { 0, 0, 1 }, { 0, 1, 0 }, { 1, 0, 0 }, { 0, 0 } );
-        if ( sample.has_value() ) bSamplesDir16.push_back( sample.value().first );
-
-        bpmaterial.m_ns = 64;
-        sample = bpmaterial.sample( { -1, 0, 1 }, { 0, 0, 1 }, { 0, 1, 0 }, { 1, 0, 0 }, { 0, 0 } );
-        if ( sample.has_value() ) bSamplesDir64.push_back( sample.value().first );
-
-        bpmaterial.m_ns = 128;
-        sample = bpmaterial.sample( { -1, 0, 1 }, { 0, 0, 1 }, { 0, 1, 0 }, { 1, 0, 0 }, { 0, 0 } );
-        if ( sample.has_value() ) bSamplesDir128.push_back( sample.value().first );
+        uSamplesDir.push_back( Random::UniformSphereSampler::getDir( &generator ).first );
+        cSamplesDir.push_back( Random::CosineWeightedSphereSampler::getDir( &generator ).first );
+        bSamplesDir4.push_back( Random::BlinnPhongSphereSampler::getDir( &generator, 4 ).first );
+        bSamplesDir16.push_back( Random::BlinnPhongSphereSampler::getDir( &generator, 16 ).first );
+        bSamplesDir64.push_back( Random::BlinnPhongSphereSampler::getDir( &generator, 64 ).first );
+        bSamplesDir128.push_back(
+            Random::BlinnPhongSphereSampler::getDir( &generator, 128 ).first );
     }
 
-    json j = { //{ "UniformSampleDir", uSamplesDir },
-               //{ "CosineWeightedSampleDir", cSamplesDir },
-               { "BlinnPhongSampleDir 4", bSamplesDir4 },
-               { "BlinnPhongSampleDir 16", bSamplesDir16 },
-               { "BlinnPhongSampleDir 64", bSamplesDir64 },
-               { "BlinnPhongSampleDir 128", bSamplesDir128 } };
-    //    {"BlinnPhongMaterial", bpmat}};
-    //    { "UniformSamplePoint", uSamplesPoint },
-    //    { "CosineWeightedSamplePoint", cSamplesPoint },
-    //    { "BlinnPhongSamplePoint", bSamplesPoint }
+    //! [Creating a json format to write the samples in and write to a file named "samples.json"]
+    json j = { { "UniformSamples", uSamplesDir },
+               { "CosineWeightedSamples", cSamplesDir },
+               { "BlinnPhongSamples 4", bSamplesDir4 },
+               { "BlinnPhongSamples 16", bSamplesDir16 },
+               { "BlinnPhongSamples 64", bSamplesDir64 },
+               { "BlinnPhongSamples 128", bSamplesDir128 } };
 
     std::ofstream o( "samples.json" );
 
     o << std::setw( 4 ) << j << std::endl;
 
     o.close();
+
+    //! [Samples can now be displayed with the python script named "plot-samples.py"]
 
     return 0;
 }
