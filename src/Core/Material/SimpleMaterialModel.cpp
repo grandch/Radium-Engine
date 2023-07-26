@@ -21,7 +21,8 @@ void SimpleMaterialModel::displayInfo() const {
     print( hasOpacityTexture(), " Alpha Texture  : ", m_texOpacity );
 }
 
-Utils::Color SimpleMaterialModel::evalBSDF( Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv ) {
+Utils::Color
+SimpleMaterialModel::operator()( Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv ) {
     return m_kd;
 }
 std::optional<std::pair<Vector3, Scalar>> SimpleMaterialModel::sample( Vector3 inDir,
@@ -31,7 +32,7 @@ std::optional<std::pair<Vector3, Scalar>> SimpleMaterialModel::sample( Vector3 i
                                                                        Vector2 u ) {
     return {};
 }
-Scalar SimpleMaterialModel::PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) {
+Scalar SimpleMaterialModel::pdf( Vector3 inDir, Vector3 outDir, Vector3 normal ) {
     return 0_ra;
 }
 
@@ -51,10 +52,10 @@ void LambertianMaterialModel::displayInfo() const {
     print( hasOpacityTexture(), " Alpha Texture  : ", m_texOpacity );
 }
 
-Utils::Color Material::LambertianMaterialModel::evalBSDF( Vector3 w_i,
-                                                          Vector3 w_o,
-                                                          Vector3 normal,
-                                                          Vector2 uv ) {
+Utils::Color Material::LambertianMaterialModel::operator()( Vector3 w_i,
+                                                            Vector3 w_o,
+                                                            Vector3 normal,
+                                                            Vector2 uv ) {
     if ( w_i.dot( normal ) <= 0 || w_o.dot( normal ) <= 0 ) { return Utils::Color::Black(); }
 
     return m_kd / M_PI;
@@ -76,7 +77,7 @@ std::optional<std::pair<Vector3, Scalar>> LambertianMaterialModel::sample( Vecto
     return result;
 }
 
-Scalar LambertianMaterialModel::PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) {
+Scalar LambertianMaterialModel::pdf( Vector3 inDir, Vector3 outDir, Vector3 normal ) {
     return Core::Random::CosineWeightedSphereSampler::pdf( outDir, normal );
 }
 

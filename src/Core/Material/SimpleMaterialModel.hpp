@@ -31,10 +31,10 @@ class RA_CORE_API SimpleMaterialModel : public MaterialModel
     bool hasDiffuseTexture() const { return m_hasTexDiffuse; }
     bool hasOpacityTexture() const { return m_hasTexOpacity; }
 
-    Utils::Color evalBSDF( Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv ) override;
+    Utils::Color operator()( Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv ) override;
     std::optional<std::pair<Vector3, Scalar>>
     sample( Vector3 inDir, Vector3 normal, Vector3 tangent, Vector3 bitangent, Vector2 u ) override;
-    Scalar PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) override;
+    Scalar pdf( Vector3 inDir, Vector3 outDir, Vector3 normal ) override;
 
     inline Utils::Color getDiffuseColor() const { return m_kd; }
     inline Scalar getAlpha() const { return m_alpha; }
@@ -86,10 +86,10 @@ class RA_CORE_API LambertianMaterialModel : public SimpleMaterialModel
     /// QUERY
     bool hasNormalTexture() const { return m_hasTexNormal; }
 
-    Utils::Color evalBSDF( Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv ) override;
+    Utils::Color operator()( Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv ) override;
     std::optional<std::pair<Vector3, Scalar>>
     sample( Vector3 inDir, Vector3 normal, Vector3 tangent, Vector3 bitangent, Vector2 u ) override;
-    Scalar PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) override;
+    Scalar pdf( Vector3 inDir, Vector3 outDir, Vector3 normal ) override;
 
     inline std::string getTexNormal() const { return m_texNormal; }
     inline void setTexNormal( std::string texNormal ) {

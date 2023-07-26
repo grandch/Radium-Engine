@@ -25,10 +25,11 @@ void BlinnPhongMaterialModel::displayInfo() const {
     print( hasNormalTexture(), " Normal Texture : ", m_texNormal );
     print( hasOpacityTexture(), " Alpha Texture  : ", m_texOpacity );
 }
-Utils::Color Material::BlinnPhongMaterialModel::evalBSDF( Vector3 w_i,
-                                                          Vector3 w_o,
-                                                          Vector3 normal,
-                                                          Vector2 uv ) {
+
+Utils::Color Material::BlinnPhongMaterialModel::operator()( Vector3 w_i,
+                                                            Vector3 w_o,
+                                                            Vector3 normal,
+                                                            Vector2 uv ) {
     // diffuse lambertien component
     Utils::Color diffuse = m_kd / M_PI;
 
@@ -76,7 +77,7 @@ std::optional<std::pair<Vector3, Scalar>> BlinnPhongMaterialModel::sample( Vecto
     }
 }
 
-Scalar BlinnPhongMaterialModel::PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) {
+Scalar BlinnPhongMaterialModel::pdf( Vector3 inDir, Vector3 outDir, Vector3 normal ) {
     return std::clamp( m_diffuseLuminance *
                                Core::Random::CosineWeightedSphereSampler::pdf( outDir, normal ) +
                            m_specularLuminance *

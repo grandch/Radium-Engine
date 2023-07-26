@@ -34,10 +34,10 @@ class RA_CORE_API BlinnPhongMaterialModel : public SimpleMaterialModel
 
     bool hasNormalTexture() const { return m_hasTexNormal; }
 
-    Utils::Color evalBSDF( Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv ) override;
+    Utils::Color operator()( Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv ) override;
     std::optional<std::pair<Vector3, Scalar>>
     sample( Vector3 inDir, Vector3 normal, Vector3 tangent, Vector3 bitangent, Vector2 u ) override;
-    Scalar PDF( Vector3 inDir, Vector3 outDir, Vector3 normal ) override;
+    Scalar pdf( Vector3 inDir, Vector3 outDir, Vector3 normal ) override;
 
     inline Utils::Color getSpecularColor() const { return m_ks; }
     inline Scalar getShininess() const { return m_ns; }
