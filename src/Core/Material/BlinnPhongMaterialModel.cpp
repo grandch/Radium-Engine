@@ -86,6 +86,16 @@ Scalar BlinnPhongMaterialModel::pdf( Vector3 inDir, Vector3 outDir, Vector3 norm
                        1_ra );
 }
 
+void BlinnPhongMaterialModel::computeLuminance() {
+    Vector3 rgbToLuminance { 0.2126_ra, 0.7152_ra, 0.0722_ra };
+    Scalar dIntensity   = m_kd.rgb().dot( rgbToLuminance );
+    Scalar sIntensity   = m_ks.rgb().dot( rgbToLuminance );
+    Scalar diffSpecNorm = std::max( 1_ra, dIntensity + sIntensity );
+
+    m_diffuseLuminance  = dIntensity / diffSpecNorm;
+    m_specularLuminance = sIntensity / diffSpecNorm;
+}
+
 } // namespace Material
 } // namespace Core
 } // namespace Ra

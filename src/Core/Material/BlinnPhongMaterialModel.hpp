@@ -48,26 +48,14 @@ class RA_CORE_API BlinnPhongMaterialModel : public SimpleMaterialModel
     inline std::string getTexNormal() const { return m_texNormal; }
 
     inline void setDiffuseColor( Utils::Color color ) {
-        m_kd = color;
-        Vector3 rgbToLuminance { 0.2126_ra, 0.7152_ra, 0.0722_ra };
-        Scalar dIntensity   = m_kd.rgb().dot( rgbToLuminance );
-        Scalar sIntensity   = m_ks.rgb().dot( rgbToLuminance );
-        Scalar diffSpecNorm = std::max( 1_ra, dIntensity + sIntensity );
-
-        m_diffuseLuminance /= diffSpecNorm;
-        m_specularLuminance /= diffSpecNorm;
+        m_kd    = color;
         m_alpha = color.alpha();
+        computeLuminance();
     }
 
     inline void setSpecularColor( Utils::Color color ) {
         m_ks = color;
-        Vector3 rgbToLuminance { 0.2126_ra, 0.7152_ra, 0.0722_ra };
-        Scalar dIntensity   = m_kd.rgb().dot( rgbToLuminance );
-        Scalar sIntensity   = m_ks.rgb().dot( rgbToLuminance );
-        Scalar diffSpecNorm = std::max( 1_ra, dIntensity + sIntensity );
-
-        m_diffuseLuminance /= diffSpecNorm;
-        m_specularLuminance /= diffSpecNorm;
+        computeLuminance();
     }
 
     inline void setShininess( Scalar specular ) { m_ns = specular; }
@@ -85,6 +73,8 @@ class RA_CORE_API BlinnPhongMaterialModel : public SimpleMaterialModel
     }
 
   private:
+    void computeLuminance();
+
     Core::Utils::Color m_ks { 0.3_ra, 0.3_ra, 0.3_ra };
     Scalar m_ns { 64_ra };
     Scalar m_diffuseLuminance;
