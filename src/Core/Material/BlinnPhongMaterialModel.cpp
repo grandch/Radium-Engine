@@ -49,8 +49,7 @@ Utils::Color Material::BlinnPhongMaterialModel::operator()( Vector3 w_i,
 std::optional<std::pair<Vector3, Scalar>> BlinnPhongMaterialModel::sample( Vector3 inDir,
                                                                            Vector3 normal,
                                                                            Vector3 tangent,
-                                                                           Vector3 bitangent,
-                                                                           Vector2 u ) {
+                                                                           Vector3 bitangent ) {
     Vector3 halfway;
 
     Scalar distrib = m_generator.get()->get1D();

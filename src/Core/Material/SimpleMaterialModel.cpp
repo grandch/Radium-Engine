@@ -25,11 +25,8 @@ Utils::Color
 SimpleMaterialModel::operator()( Vector3 w_i, Vector3 w_o, Vector3 normal, Vector2 uv ) {
     return m_kd;
 }
-std::optional<std::pair<Vector3, Scalar>> SimpleMaterialModel::sample( Vector3 inDir,
-                                                                       Vector3 normal,
-                                                                       Vector3 tangent,
-                                                                       Vector3 bitangent,
-                                                                       Vector2 u ) {
+std::optional<std::pair<Vector3, Scalar>>
+SimpleMaterialModel::sample( Vector3 inDir, Vector3 normal, Vector3 tangent, Vector3 bitangent ) {
     return {};
 }
 Scalar SimpleMaterialModel::pdf( Vector3 inDir, Vector3 outDir, Vector3 normal ) {
@@ -64,8 +61,7 @@ Utils::Color Material::LambertianMaterialModel::operator()( Vector3 w_i,
 std::optional<std::pair<Vector3, Scalar>> LambertianMaterialModel::sample( Vector3 inDir,
                                                                            Vector3 normal,
                                                                            Vector3 tangent,
-                                                                           Vector3 bitangent,
-                                                                           Vector2 u ) {
+                                                                           Vector3 bitangent ) {
     // sample point on hemisphere with cosine-weighted distribution
     std::pair<Vector3, Scalar> smpl =
         Core::Random::CosineWeightedSphereSampler::getDir( m_generator.get() );
