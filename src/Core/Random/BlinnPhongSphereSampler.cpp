@@ -28,7 +28,7 @@ Scalar BlinnPhongSphereSampler::pdf( Vector3 dir, Vector3 normal, Scalar shinine
 }
 
 Vector3 BlinnPhongSphereSampler::reflect( Vector3 inDir, Vector3 normal ) {
-    return -inDir + 2 * inDir.dot( normal ) * normal;
+    return ( -inDir + 2 * inDir.dot( normal ) * normal ).normalized();
 }
 
 } // namespace Random
