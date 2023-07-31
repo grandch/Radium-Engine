@@ -51,8 +51,7 @@ TEST_CASE( "Core/Random/UniformSphereSampler" ) {
         d = p.first;
         REQUIRE( Math::areApproxEqual( d.x(), 0.84147_ra ) );
         REQUIRE( Math::areApproxEqual( d.y(), 0_ra ) );
-        // REQUIRE(Math::areApproxEqual(d.z(), 0.5403_ra));
-        REQUIRE( d.z() == 0.5403_ra );
+        REQUIRE( Math::areApproxEqual( d.z(), 0.5403_ra ) );
 
         fg.set2D( { 0.5, 0.5 } );
         p = Random::UniformSphereSampler::getDir( &fg );
@@ -94,10 +93,9 @@ TEST_CASE( "Core/Random/CosineWeightedSphereSampler" ) {
         fg.set2D( { 1, 1 } );
         p = Random::CosineWeightedSphereSampler::getDir( &fg );
         d = p.first;
-        REQUIRE( Math::areApproxEqual( d.x(), 0.84147_ra ) ); // failed
+        REQUIRE( Math::areApproxEqual( d.x(), 0.84147_ra ) );
         REQUIRE( Math::areApproxEqual( d.y(), 0_ra ) );
-        // REQUIRE(Math::areApproxEqual(d.z(), 0.54_ra));
-        REQUIRE( d.z() == 0.5403_ra );
+        REQUIRE( Math::areApproxEqual( d.z(), 0.54_ra ) );
 
         fg.set2D( { 0.5, 0.5 } );
         p = Random::CosineWeightedSphereSampler::getDir( &fg );
@@ -146,29 +144,31 @@ TEST_CASE( "Core/Random/BlinnPhongSphereSampler" ) {
         fg.set2D( { 0.5, 0.5 } );
         p = Random::BlinnPhongSphereSampler::getDir( &fg, 128 );
         d = p.first;
-        // REQUIRE(Math::areApproxEqual(d.x(), -0.1_ra));
-        REQUIRE( d.x() == -0.10299_ra );
+        REQUIRE( Math::areApproxEqual( d.x(), -0.1_ra ) );
         REQUIRE( Math::areApproxEqual( d.y(), 0_ra ) );
         REQUIRE( Math::areApproxEqual( d.z(), 0.99_ra ) );
     }
 
-    // SECTION("pdf") {
-    //     Vector3 normal, dir;
-    //     Scalar usspdf;
+    SECTION( "pdf" ) {
+        Vector3 normal;
+        Scalar usspdf;
 
-    //     normal = {0,0,1};
-    //     dir = {0,0,1};
-    //     usspdf = Random::BlinnPhongSphereSampler::pdf(dir, normal);
-    //     REQUIRE(Math::areApproxEqual(usspdf, 1 / ( 2 * Math::Pi )));
+        normal = { 0, 0, 1 };
+        usspdf = Random::BlinnPhongSphereSampler::pdf(
+            { 0, 0, 1 },
+            Random::BlinnPhongSphereSampler::reflect( { 0, 0, 1 }, normal ),
+            normal,
+            8 );
+        REQUIRE( Math::areApproxEqual( usspdf, 1.59155_ra ) );
 
-    //     dir = {0,1,0};
-    //     usspdf = Random::BlinnPhongSphereSampler::pdf(dir, normal);
-    //     REQUIRE(Math::areApproxEqual(usspdf, 1 / ( 2 * Math::Pi )));
+        usspdf =
+            Random::BlinnPhongSphereSampler::pdf( { 0, 1, 0 }, { 0.02, -0.97, 0.01 }, normal, 4 );
+        REQUIRE( Math::areApproxEqual( usspdf, 0.038187_ra ) );
 
-    //     dir = {1,0,0};
-    //     usspdf = Random::BlinnPhongSphereSampler::pdf(dir, normal);
-    //     REQUIRE(Math::areApproxEqual(usspdf, 1 / ( 2 * Math::Pi )));
-    // }
+        usspdf = Random::BlinnPhongSphereSampler::pdf(
+            { 1, 0, 0.5 }, { -1.01, 0.03, 0.49 }, normal, 32 );
+        REQUIRE( Math::areApproxEqual( usspdf, 5.33004_ra ) );
+    }
 
     SECTION( "reflect" ) {
         Vector3 normal = { 0, 0, 1 };
@@ -176,20 +176,16 @@ TEST_CASE( "Core/Random/BlinnPhongSphereSampler" ) {
         Vector3 reflected = Random::BlinnPhongSphereSampler::reflect( { 0, 0, -1 }, normal );
         REQUIRE( Math::areApproxEqual( reflected.x(), 0_ra ) );
         REQUIRE( Math::areApproxEqual( reflected.y(), 0_ra ) );
-        // REQUIRE(Math::areApproxEqual(reflected.z(), 1_ra));
-        REQUIRE( reflected.z() == -1_ra );
+        REQUIRE( Math::areApproxEqual( reflected.z(), 1_ra ) );
 
         reflected = Random::BlinnPhongSphereSampler::reflect( { 1, 0, 0 }, normal );
-        // REQUIRE(Math::areApproxEqual(reflected.x(), 1_ra));
-        REQUIRE( reflected.x() == -1_ra );
+        REQUIRE( Math::areApproxEqual( reflected.x(), -1_ra ) );
         REQUIRE( Math::areApproxEqual( reflected.y(), 0_ra ) );
         REQUIRE( Math::areApproxEqual( reflected.z(), 0_ra ) );
 
         reflected = Random::BlinnPhongSphereSampler::reflect( { 0.5, 0.5, -0.5 }, normal );
-        // REQUIRE(Math::areApproxEqual(reflected.x(), 0_ra));
-        // REQUIRE(Math::areApproxEqual(reflected.y(), 0_ra));
-        // REQUIRE(Math::areApproxEqual(reflected.z(), 1_ra));
-        // std::cout << std::endl << std::endl << "REFLECT" << std::endl << std::endl <<
-        // reflected.x() << ", " << reflected.y() << ", " << reflected.z() << std::endl;
+        REQUIRE( Math::areApproxEqual( reflected.x(), -0.5_ra ) );
+        REQUIRE( Math::areApproxEqual( reflected.y(), -0.5_ra ) );
+        REQUIRE( Math::areApproxEqual( reflected.z(), -0.5_ra ) );
     }
 }
