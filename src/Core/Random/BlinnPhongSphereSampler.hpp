@@ -24,11 +24,12 @@ class RA_CORE_API BlinnPhongSphereSampler : public CosineWeightedSphereSampler
 
     /// @brief Static method to compute probability density function value associated with a
     /// outgoing direction and a normal vector according to Blinn-Phong reflectance model.
-    /// @param dir Outgoing direction in world frame.
+    /// @param w_i ingoing direction in world frame.
+    /// @param w_o Outgoing direction in world frame.
     /// @param normal Normal vector in world frame, gives the orientation of the sampled hemisphere.
     /// @param shininess Blinn-Phong exponent.
     /// @return Scalar probability.
-    static Scalar pdf( Vector3 dir, Vector3 normal, Scalar shininess );
+    static Scalar pdf( Vector3 w_i, Vector3 w_o, Vector3 normal, Scalar shininess );
 
     /// @brief Compute the reflected direction of the inDir direction by the surface represented by
     /// the normal vector.

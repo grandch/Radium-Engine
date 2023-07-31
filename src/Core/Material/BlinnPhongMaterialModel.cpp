@@ -87,11 +87,12 @@ BlinnPhongMaterialModel::sample( Vector3 w_i, Vector3 normal, Vector3 tangent, V
 }
 
 Scalar BlinnPhongMaterialModel::pdf( Vector3 w_i, Vector3 w_o, Vector3 normal ) {
-    return std::clamp(
-        m_diffuseLuminance * Core::Random::CosineWeightedSphereSampler::pdf( w_o, normal ) +
-            m_specularLuminance * Core::Random::BlinnPhongSphereSampler::pdf( w_o, normal, m_ns ),
-        0_ra,
-        1_ra );
+    return std::clamp( m_diffuseLuminance *
+                               Core::Random::CosineWeightedSphereSampler::pdf( w_o, normal ) +
+                           m_specularLuminance *
+                               Core::Random::BlinnPhongSphereSampler::pdf( w_i, w_o, normal, m_ns ),
+                       0_ra,
+                       1_ra );
 }
 
 void BlinnPhongMaterialModel::computeLuminance() {

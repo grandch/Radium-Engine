@@ -22,9 +22,14 @@ Ra::Core::Random::BlinnPhongSphereSampler::getDir( UniformGenerator* generator, 
     return { dir, ( shininess + 2 ) * std::pow( 1_ra - u[0], shininess ) / ( 2 * Math::Pi ) };
 }
 
-Scalar BlinnPhongSphereSampler::pdf( Vector3 dir, Vector3 normal, Scalar shininess ) {
-    dir.normalize();
-    return ( shininess + 2 ) * std::pow( dir.dot( normal ), shininess ) / ( 2 * Math::Pi );
+Scalar BlinnPhongSphereSampler::pdf( Vector3 w_i, Vector3 w_o, Vector3 normal, Scalar shininess ) {
+    w_i.normalize();
+    w_o.normalize();
+
+    Vector3 halfway = ( w_i + w_o ).normalized();
+    Scalar cosTheta = normal.dot( halfway );
+
+    return ( shininess + 2 ) * std::pow( cosTheta, shininess ) / ( 2 * Math::Pi );
 }
 
 Vector3 BlinnPhongSphereSampler::reflect( Vector3 inDir, Vector3 normal ) {
