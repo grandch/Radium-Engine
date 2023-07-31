@@ -33,7 +33,7 @@ Scalar BlinnPhongSphereSampler::pdf( Vector3 w_i, Vector3 w_o, Vector3 normal, S
 }
 
 Vector3 BlinnPhongSphereSampler::reflect( Vector3 inDir, Vector3 normal ) {
-    return ( -inDir + 2 * inDir.dot( normal ) * normal ).normalized();
+    return { -inDir.x(), -inDir.y(), inDir.z() };
 }
 
 } // namespace Random
