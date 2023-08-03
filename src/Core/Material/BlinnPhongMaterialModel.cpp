@@ -64,20 +64,14 @@ BlinnPhongMaterialModel::sample( Vector3 w_i, Vector3 normal, Vector3 tangent, V
     }
     // specular part
     else if ( distrib < m_diffuseLuminance + m_specularLuminance ) {
-        // compute incoming direction in canonical frame
-        Vector3 w_iLocal = w_i.dot( normal ) * normal + w_i.dot( tangent ) * tangent +
-                           w_i.dot( bitangent ) * bitangent;
         std::pair<Vector3, Scalar> smpl =
             Core::Random::BlinnPhongSphereSampler::getDir( m_generator.get(), m_ns );
-
-        // compute reflection in canonical frame using sample as microfacet normal
-        Vector3 localReflection =
-            Core::Random::BlinnPhongSphereSampler::reflect( w_iLocal, smpl.first );
-        // compute outgoing direction in world frame using normal, tangent and bitangent vectors
-        Vector3 w_o( localReflection.dot( tangent ),
-                     localReflection.dot( bitangent ),
-                     localReflection.dot( normal ) );
-        std::pair<Vector3, Scalar> result { w_o, smpl.second };
+        Vector3 localMicroFacetNormal = smpl.first;
+        Vector3 microFacetNormal( localMicroFacetNormal.dot( tangent ),
+                                  localMicroFacetNormal.dot( bitangent ),
+                                  localMicroFacetNormal.dot( normal ) );
+        Vector3 reflected = Core::Random::BlinnPhongSphereSampler::reflect( w_i, microFacetNormal );
+        std::pair<Vector3, Scalar> result { reflected, smpl.second };
 
         return result;
     }
