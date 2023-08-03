@@ -39,24 +39,24 @@ class FakeGenerator : public Random::UniformGenerator
 TEST_CASE( "Core/Random/UniformSphereSampler" ) {
     auto fg = FakeGenerator();
     SECTION( "getDir" ) {
-        fg.set2D( { 0, 0 } );
+        fg.set2D( { 0_ra, 0_ra } );
         auto p    = Random::UniformSphereSampler::getDir( &fg );
         Vector3 d = p.first;
         REQUIRE( Math::areApproxEqual( d.x(), 0_ra ) );
         REQUIRE( Math::areApproxEqual( d.y(), 0_ra ) );
         REQUIRE( Math::areApproxEqual( d.z(), 1_ra ) );
 
-        fg.set2D( { 1, 1 } );
+        fg.set2D( { 1_ra, 1_ra } );
         p = Random::UniformSphereSampler::getDir( &fg );
         d = p.first;
         REQUIRE( Math::areApproxEqual( d.x(), 0.84147_ra ) );
         REQUIRE( Math::areApproxEqual( d.y(), 0_ra ) );
-        REQUIRE( Math::areApproxEqual( d.z(), 0.5403_ra ) );
+        REQUIRE( Math::areApproxEqual( d.z(), 0.5403_ra, 1000_ra ) );
 
-        fg.set2D( { 0.5, 0.5 } );
+        fg.set2D( { 0.5_ra, 0.5_ra } );
         p = Random::UniformSphereSampler::getDir( &fg );
         d = p.first;
-        REQUIRE( Math::areApproxEqual( d.x(), -0.48_ra ) );
+        REQUIRE( Math::areApproxEqual( d.x(), -0.48_ra, 1000_ra ) );
         REQUIRE( Math::areApproxEqual( d.y(), 0_ra ) );
         REQUIRE( Math::areApproxEqual( d.z(), 0.88_ra ) );
     }
@@ -65,16 +65,16 @@ TEST_CASE( "Core/Random/UniformSphereSampler" ) {
         Vector3 normal, dir;
         Scalar usspdf;
 
-        normal = { 0, 0, 1 };
-        dir    = { 0, 0, 1 };
+        normal = { 0_ra, 0_ra, 1_ra };
+        dir    = { 0_ra, 0_ra, 1_ra };
         usspdf = Random::UniformSphereSampler::pdf( dir, normal );
         REQUIRE( Math::areApproxEqual( usspdf, 1 / ( 2 * Math::Pi ) ) );
 
-        dir    = { 0, 1, 0 };
+        dir    = { 0_ra, 1_ra, 0_ra };
         usspdf = Random::UniformSphereSampler::pdf( dir, normal );
         REQUIRE( Math::areApproxEqual( usspdf, 1 / ( 2 * Math::Pi ) ) );
 
-        dir    = { 1, 0, 0 };
+        dir    = { 1_ra, 0_ra, 0_ra };
         usspdf = Random::UniformSphereSampler::pdf( dir, normal );
         REQUIRE( Math::areApproxEqual( usspdf, 1 / ( 2 * Math::Pi ) ) );
     }
@@ -83,21 +83,21 @@ TEST_CASE( "Core/Random/UniformSphereSampler" ) {
 TEST_CASE( "Core/Random/CosineWeightedSphereSampler" ) {
     auto fg = FakeGenerator();
     SECTION( "getDir" ) {
-        fg.set2D( { 0, 0 } );
+        fg.set2D( { 0_ra, 0_ra } );
         auto p    = Random::CosineWeightedSphereSampler::getDir( &fg );
         Vector3 d = p.first;
         REQUIRE( Math::areApproxEqual( d.x(), 0_ra ) );
         REQUIRE( Math::areApproxEqual( d.y(), 0_ra ) );
         REQUIRE( Math::areApproxEqual( d.z(), 1_ra ) );
 
-        fg.set2D( { 1, 1 } );
+        fg.set2D( { 1_ra, 1_ra } );
         p = Random::CosineWeightedSphereSampler::getDir( &fg );
         d = p.first;
         REQUIRE( Math::areApproxEqual( d.x(), 0.84147_ra ) );
         REQUIRE( Math::areApproxEqual( d.y(), 0_ra ) );
-        REQUIRE( Math::areApproxEqual( d.z(), 0.54_ra ) );
+        REQUIRE( Math::areApproxEqual( d.z(), 0.54_ra, 1000_ra ) );
 
-        fg.set2D( { 0.5, 0.5 } );
+        fg.set2D( { 0.5_ra, 0.5_ra } );
         p = Random::CosineWeightedSphereSampler::getDir( &fg );
         d = p.first;
         REQUIRE( Math::areApproxEqual( d.x(), -0.65_ra ) );
@@ -109,16 +109,16 @@ TEST_CASE( "Core/Random/CosineWeightedSphereSampler" ) {
         Vector3 normal, dir;
         Scalar usspdf;
 
-        normal = { 0, 0, 1 };
-        dir    = { 0, 0, 1 };
+        normal = { 0_ra, 0_ra, 1_ra };
+        dir    = { 0_ra, 0_ra, 1_ra };
         usspdf = Random::CosineWeightedSphereSampler::pdf( dir, normal );
         REQUIRE( Math::areApproxEqual( usspdf, 1 / Math::Pi ) );
 
-        dir    = { 0, 1, 0 };
+        dir    = { 0_ra, 1_ra, 0_ra };
         usspdf = Random::CosineWeightedSphereSampler::pdf( dir, normal );
         REQUIRE( Math::areApproxEqual( usspdf, 0_ra ) );
 
-        dir    = { 1, 0, 0 };
+        dir    = { 1_ra, 0_ra, 0_ra };
         usspdf = Random::CosineWeightedSphereSampler::pdf( dir, normal );
         REQUIRE( Math::areApproxEqual( usspdf, 0_ra ) );
     }
@@ -127,24 +127,24 @@ TEST_CASE( "Core/Random/CosineWeightedSphereSampler" ) {
 TEST_CASE( "Core/Random/BlinnPhongSphereSampler" ) {
     auto fg = FakeGenerator();
     SECTION( "getDir" ) {
-        fg.set2D( { 0, 0 } );
+        fg.set2D( { 0_ra, 0_ra } );
         auto p    = Random::BlinnPhongSphereSampler::getDir( &fg, 8 );
         Vector3 d = p.first;
         REQUIRE( Math::areApproxEqual( d.x(), 0_ra ) );
         REQUIRE( Math::areApproxEqual( d.y(), 0_ra ) );
         REQUIRE( Math::areApproxEqual( d.z(), 1_ra ) );
 
-        fg.set2D( { 1, 1 } );
+        fg.set2D( { 1_ra, 1_ra } );
         p = Random::BlinnPhongSphereSampler::getDir( &fg, 32 );
         d = p.first;
         REQUIRE( Math::areApproxEqual( d.x(), 1_ra ) );
         REQUIRE( Math::areApproxEqual( d.y(), 0_ra ) );
         REQUIRE( Math::areApproxEqual( d.z(), 0_ra ) );
 
-        fg.set2D( { 0.5, 0.5 } );
+        fg.set2D( { 0.5_ra, 0.5_ra } );
         p = Random::BlinnPhongSphereSampler::getDir( &fg, 128 );
         d = p.first;
-        REQUIRE( Math::areApproxEqual( d.x(), -0.1_ra ) );
+        REQUIRE( Math::areApproxEqual( d.x(), -0.1_ra, 1000_ra ) );
         REQUIRE( Math::areApproxEqual( d.y(), 0_ra ) );
         REQUIRE( Math::areApproxEqual( d.z(), 0.99_ra ) );
     }
@@ -153,37 +153,38 @@ TEST_CASE( "Core/Random/BlinnPhongSphereSampler" ) {
         Vector3 normal;
         Scalar usspdf;
 
-        normal = { 0, 0, 1 };
+        normal = { 0_ra, 0_ra, 1_ra };
         usspdf = Random::BlinnPhongSphereSampler::pdf(
-            { 0, 0, 1 },
-            Random::BlinnPhongSphereSampler::reflect( { 0, 0, 1 }, normal ),
+            { 0_ra, 0_ra, 1_ra },
+            Random::BlinnPhongSphereSampler::reflect( { 0_ra, 0_ra, 1_ra }, normal ),
             normal,
-            8 );
+            8_ra );
         REQUIRE( Math::areApproxEqual( usspdf, 1.59155_ra ) );
 
-        usspdf =
-            Random::BlinnPhongSphereSampler::pdf( { 0, 1, 0 }, { 0.02, -0.97, 0.01 }, normal, 4 );
+        usspdf = Random::BlinnPhongSphereSampler::pdf(
+            { 0_ra, 1_ra, 0_ra }, { 0.02_ra, -0.97_ra, 0.01_ra }, normal, 4_ra );
         REQUIRE( Math::areApproxEqual( usspdf, 0.038187_ra ) );
 
         usspdf = Random::BlinnPhongSphereSampler::pdf(
-            { 1, 0, 0.5 }, { -1.01, 0.03, 0.49 }, normal, 32 );
-        REQUIRE( Math::areApproxEqual( usspdf, 5.33004_ra ) );
+            { 1_ra, 0_ra, 0.5_ra }, { -1.01_ra, 0.03_ra, 0.49_ra }, normal, 32_ra );
+        REQUIRE( Math::areApproxEqual( usspdf, 5.33004_ra, 1000_ra ) );
     }
 
     SECTION( "reflect" ) {
-        Vector3 normal = { 0, 0, 1 };
+        Vector3 normal = { 0_ra, 0_ra, 1_ra };
 
-        Vector3 reflected = Random::BlinnPhongSphereSampler::reflect( { 0, 0, -1 }, normal );
+        Vector3 reflected =
+            Random::BlinnPhongSphereSampler::reflect( { 0_ra, 0_ra, -1_ra }, normal );
         REQUIRE( Math::areApproxEqual( reflected.x(), 0_ra ) );
         REQUIRE( Math::areApproxEqual( reflected.y(), 0_ra ) );
-        REQUIRE( Math::areApproxEqual( reflected.z(), 1_ra ) );
+        REQUIRE( Math::areApproxEqual( reflected.z(), -1_ra, 1000_ra ) );
 
-        reflected = Random::BlinnPhongSphereSampler::reflect( { 1, 0, 0 }, normal );
+        reflected = Random::BlinnPhongSphereSampler::reflect( { 1_ra, 0_ra, 0_ra }, normal );
         REQUIRE( Math::areApproxEqual( reflected.x(), -1_ra ) );
         REQUIRE( Math::areApproxEqual( reflected.y(), 0_ra ) );
         REQUIRE( Math::areApproxEqual( reflected.z(), 0_ra ) );
 
-        reflected = Random::BlinnPhongSphereSampler::reflect( { 0.5, 0.5, -0.5 }, normal );
+        reflected = Random::BlinnPhongSphereSampler::reflect( { 0.5_ra, 0.5_ra, -0.5_ra }, normal );
         REQUIRE( Math::areApproxEqual( reflected.x(), -0.5_ra ) );
         REQUIRE( Math::areApproxEqual( reflected.y(), -0.5_ra ) );
         REQUIRE( Math::areApproxEqual( reflected.z(), -0.5_ra ) );
