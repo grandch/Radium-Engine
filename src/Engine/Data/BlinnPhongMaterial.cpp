@@ -17,6 +17,7 @@ static const std::string materialName { "BlinnPhong" };
 nlohmann::json BlinnPhongMaterial::s_parametersMetadata = {};
 
 BlinnPhongMaterial::BlinnPhongMaterial( const std::string& instanceName ) :
+    m_coreMaterial( new Core::Material::BlinnPhongMaterialModel() ),
     Material( instanceName, materialName, Material::MaterialAspect::MAT_OPAQUE ) {}
 
 BlinnPhongMaterial::~BlinnPhongMaterial() {
@@ -27,10 +28,13 @@ void BlinnPhongMaterial::updateRenderingParameters() {
     // update the rendering parameters
     auto& renderParameters = getParameters();
     renderParameters.addParameter( "material.kd", m_kd );
+    m_coreMaterial->setDiffuseColor( m_kd );
     renderParameters.addParameter( "material.hasPerVertexKd", m_perVertexColor );
     renderParameters.addParameter( "material.renderAsSplat", m_renderAsSplat );
     renderParameters.addParameter( "material.ks", m_ks );
+    m_coreMaterial->setSpecularColor( m_ks );
     renderParameters.addParameter( "material.ns", m_ns );
+    m_coreMaterial->setShininess( m_ns );
     renderParameters.addParameter( "material.alpha", std::min( m_alpha, m_kd[3] ) );
     Texture* tex = getTexture( BlinnPhongMaterial::TextureSemantic::TEX_DIFFUSE );
     if ( tex != nullptr ) { renderParameters.addParameter( "material.tex.kd", tex ); }
