@@ -13,7 +13,7 @@ class RA_CORE_API UniformGenerator
 {
   public:
     UniformGenerator() {};
-    ~UniformGenerator() {};
+    virtual ~UniformGenerator() = 0;
 
     /// @brief Virtual method used to get a one dimention random scalar.
     /// @return random Scalar between 0 and 1.

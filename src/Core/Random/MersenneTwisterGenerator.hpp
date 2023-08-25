@@ -14,7 +14,7 @@ class RA_CORE_API MersenneTwisterGenerator : public UniformGenerator
 {
   public:
     MersenneTwisterGenerator();
-    ~MersenneTwisterGenerator();
+    ~MersenneTwisterGenerator() override = default;
 
     Scalar get1D() override;
 
